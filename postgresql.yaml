@@ -1,0 +1,12 @@
+auth:
+  database: app_db
+  enablePostgresUser: true
+  password: AppPassword
+  postgresPassword: StrongPassword
+  username: app1
+primary:
+  persistence:
+    enabled: false
+    existingClaim: postgresql-data-claim
+volumePermissions:
+  enabled: true
