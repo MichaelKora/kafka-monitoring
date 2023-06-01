@@ -2,22 +2,23 @@
 
 ## install k3d
 
-wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | bash
+`wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | bash`
+or 
+`curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash`
 
 ## create k3d docker registry
 
-k3d registry create monitoring-registry.localhost --port 12345
+`k3d registry create monitoring-registry.localhost --port 12345`
 
 ## Create cluster
 
-k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s:v1.20.15-k3s1
-
-kubectl create namespace monitoring
+`k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s:v1.20.15-k3s1`
+`kubectl create namespace monitoring`
 
 ## Create docker image
 
-docker build . --tag localhost:12345/kafka-connect-jdbc:7.2.2 && \
-docker push localhost:12345/kafka-connect-jdbc:7.2.2
+`docker build . --tag localhost:12345/kafka-connect-jdbc:7.2.2 && \
+docker push localhost:12345/kafka-connect-jdbc:7.2.2`
 
 ## Deploymwnt
 
@@ -34,7 +35,7 @@ helm upgrade \
 --namespace monitoring \
 --create-namespace \
 --wait \
-k8kafka confluentinc/cp-helm-chart
+k8kafka confluentinc/cp-helm-charts
 ```
 
 ### PostgreSQL
