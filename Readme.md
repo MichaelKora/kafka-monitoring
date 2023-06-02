@@ -1,5 +1,7 @@
 # Setup a k3d cluster
 
+Before starting the setup, move to `deployment` dir.
+
 ## install k3d
 
 `wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | bash`
