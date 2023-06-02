@@ -37,6 +37,7 @@ terraform.rc
 .env
 .vscode
 .idea
+**/*.iml
 .DS_Store
 
 # JAVA

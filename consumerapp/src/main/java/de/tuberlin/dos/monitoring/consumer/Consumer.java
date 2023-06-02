@@ -1,9 +1,10 @@
 package de.tuberlin.dos.monitoring.consumer;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Properties;
 
-import com.sun.tools.javac.util.List;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -19,11 +20,13 @@ public class Consumer {
 
 	public static void main(String[] args) {
 
-		// stolen from https://www.conduktor.io/kafka/complete-kafka-consumer-with-java/
+		Dotenv dotenv = Dotenv.configure()
+							  .filename("properties")
+							  .load();
 
-		String bootstrapServers = "127.0.0.1:9092";
-		String groupId = "topic1-group";
-		String topic = "topic1";
+		String bootstrapServers = dotenv.get("GROUP_ID");
+		String groupId = dotenv.get("GROUP_ID");
+		String topic = dotenv.get("TOPIC_NAME");
 
 		// create consumer configs
 		Properties properties = new Properties();
@@ -43,7 +46,7 @@ public class Consumer {
 	}
 
 	private static void runPollingLoop(KafkaConsumer<String, String> consumer) {
-		try {
+		try (consumer) {
 			while (true) {
 				ConsumerRecords<String, String> records =
 						consumer.poll(Duration.ofMillis(100));
@@ -51,13 +54,16 @@ public class Consumer {
 					log.info("Key: " + record.key() + ", Value: " + record.value());
 					log.info("Partition: " + record.partition() + ", Offset:" + record.offset());
 				}
+
 			}
-		} catch (WakeupException e) {
+		}
+		catch (WakeupException e) {
 			log.info("Wake up exception! Gonna shutdown consumer.");
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			log.error("Unexpected exception", e);
-		} finally {
-			consumer.close();
+		}
+		finally {
 			log.info("Consumer closed.");
 		}
 	}
