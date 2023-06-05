@@ -21,8 +21,8 @@ public class Producer {
 							  .filename("properties")
 							  .load();
 
-		String bootstrapServers = dotenv.get("GROUP_ID");
-		String topic = dotenv.get("TOPIC_NAME");
+		String bootstrapServers = dotenv.get("KAFKA_BOOTSTRAP_SERVERS");
+		String topic = dotenv.get("KAFKA_TOPIC_NAME");
 
 		KafkaProducer<String, String> producer = createProducer(bootstrapServers);
 

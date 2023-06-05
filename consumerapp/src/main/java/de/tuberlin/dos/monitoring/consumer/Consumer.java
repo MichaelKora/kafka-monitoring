@@ -24,9 +24,9 @@ public class Consumer {
 							  .filename("properties")
 							  .load();
 
-		String bootstrapServers = dotenv.get("GROUP_ID");
-		String groupId = dotenv.get("GROUP_ID");
-		String topic = dotenv.get("TOPIC_NAME");
+		String bootstrapServers = dotenv.get("KAFKA_BOOTSTRAP_SERVERS");
+		String groupId = dotenv.get("KAFKA_GROUP_ID");
+		String topic = dotenv.get("KAFKA_TOPIC_NAME");
 
 		// create consumer configs
 		Properties properties = new Properties();
@@ -54,7 +54,7 @@ public class Consumer {
 					log.info("Key: " + record.key() + ", Value: " + record.value());
 					log.info("Partition: " + record.partition() + ", Offset:" + record.offset());
 				}
-
+				consumer.commitSync();
 			}
 		}
 		catch (WakeupException e) {
