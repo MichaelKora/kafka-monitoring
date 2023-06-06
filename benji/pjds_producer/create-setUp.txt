@@ -1,0 +1,22 @@
+path_to_kafka=~/Packages/kafka_2.13-3.4.0/
+topic_name=dspj-topic
+broker=localhost:9092
+
+# Start the ZooKeeper service
+${path_to_kafka}bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start the Kafka broker service
+${path_to_kafka}bin/kafka-server-start.sh config/server.properties
+
+# Create Topic
+${path_to_kafka}bin/kafka-topics.sh --create --topic $topic_name --bootstrap-server $broker
+
+# Read Event
+${path_to_kafka}bin/kafka-console-consumer.sh --topic $topic_name --from-beginning --bootstrap-server $broker
+
+### Build Container (for producer)
+
+cd ../dspj_producer
+sudo docker build -t producer .
+
+
