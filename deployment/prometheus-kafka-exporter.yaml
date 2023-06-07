@@ -1,8 +1,0 @@
-kafkaServer:
-  - k8kafka-cp-kafka-headless.monitoring:9092
-
-service:
-  annotations:
-    prometheus.io/path: /metrics
-    prometheus.io/port: "9308"
-    prometheus.io/scrape: "true"
