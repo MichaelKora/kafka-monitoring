@@ -42,3 +42,4 @@ terraform.rc
 
 # JAVA
 **/target/
+**/dependency-reduced-pom.xml
