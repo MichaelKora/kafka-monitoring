@@ -51,4 +51,5 @@ kubectl apply -f deployment/consumerapp.yaml -n monitoring
 ```
 
 # Grafana
-To view Grafana under `localhost:3000`, just port-forward the `grafana-0` pod via `k9s`.
+To view Grafana under `localhost:3000`, just port-forward the `grafana-0` pod via `k9s`. <br>
+Login credentials default to `admin` for username and password.
