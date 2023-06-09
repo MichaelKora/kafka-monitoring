@@ -12,7 +12,6 @@ k3d registry create monitoring-registry.localhost --port 12345
 
 # Create cluster
 k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s
-kubectl create namespace monitoring
 
 # in case you want to stop/delete the cluster
 k3d cluster stop monitoring
