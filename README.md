@@ -1,7 +1,32 @@
-
-### Basic Setup & Requirements
+# Basic setup of local k3d cluster
 
 ```shell
+# navigate to deployment dir
+cd deployment
+
+# install k3d
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | bash
+
+# create k3d docker registry
+k3d registry create monitoring-registry.localhost --port 12345
+
+# Create cluster
+k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s
+kubectl create namespace monitoring
+
+# in case you want to stop/delete the cluster
+k3d cluster stop monitoring
+k3d cluster delete monitoring
+```
+
+# CLI tools
+```shell
+# install helm and helmfile
+brew install helm # for Mac
+brew install helmfile
+choco install kubernetes-helm # for Windows
+choco install helmfile
+
 # install Kubernetes CLI (see https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
 brew install kubernetes-cli # for Mac
 choco install kubernetes-cli # for Windows
@@ -11,24 +36,15 @@ brew install derailed/k9s/k9s # for Mac
 choco install k9s # for Windows
 ```
 
-For the cluster setup including 
-- Kafka, 
-- Redpanda,
-- Prometheus and
-- Grafana <br>
+# Deployment of whole stack
 
-see **[SETUP.md](docs/SETUP.md)**.
+##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
+```shell
+# install whole stack via helmfile
+helmfile apply
+```
 
 # Kafka setup
-
-```shell
-# create our test topic from within any broker pod (e.g. k8kafka-cp-kafka-0)
-kafka-topics --bootstrap-server k8kafka-cp-kafka-headless.monitoring:9092 \
---topic topic1 \
---create \
---partitions 12 \
---replication-factor 1
-```
 
 ### producerapp
 ```shell
@@ -37,7 +53,7 @@ docker build -t localhost:12345/producerapp:latest -f ./producerapp/Dockerfile .
 docker push localhost:12345/producerapp:latest
 
 # Run producer app in cluster under namespace monitoring
-kubectl apply -f deployment/producerapp.yaml -n monitoring
+kubectl apply -f deployment/producerapp.yaml -n kafka 
 ```
 
 ### consumerapp
@@ -47,9 +63,12 @@ docker build -t localhost:12345/consumerapp:latest -f ./consumerapp/Dockerfile .
 docker push localhost:12345/consumerapp:latest
 
 # Run producer app in cluster under namespace monitoring
-kubectl apply -f deployment/consumerapp.yaml -n monitoring
+kubectl apply -f deployment/consumerapp.yaml -n kafka 
 ```
 
 # Grafana
-To view Grafana under `localhost:3000`, just port-forward the `grafana-0` pod via `k9s`. <br>
-Login credentials default to `admin` for username and password.
+To view Grafana under `localhost:3000`, just port-forward the `kube-prometheus-stack-grafana` pod via `k9s`. <br>
+Login credentials default to `admin` for username and `prom-operator` for password.
+
+# Redpanda concole 
+To view Redpanda console under `localhost:8081`, just port-forward the `redpanda-console` pod via `k9s`.

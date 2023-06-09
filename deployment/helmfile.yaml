@@ -1,0 +1,88 @@
+repositories:
+  - name: strimzi
+    url: https://strimzi.io/charts/
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+  - name: confluentinc
+    url: https://confluentinc.github.io/cp-helm-charts/
+  - name: redpanda
+    url: https://charts.redpanda.com/
+#  - name: kedacore
+#    url: https://kedacore.github.io/charts
+
+helmDefaults:
+  wait: true
+  waitForJobs: true
+  createNamespace: false
+  timeout: 600
+
+releases:
+  - name: namespaces
+    namespace: default
+    chart: "./charts/namespace"
+    values:
+      - "./manifests/namespaces.yaml"
+
+  - name: kube-prometheus-stack
+    namespace: monitoring
+    chart: prometheus-community/kube-prometheus-stack
+    # Must be set to properly install CRDs
+    disableValidationOnInstall: true
+    values:
+      - "./manifests/kube-prometheus-stack.yaml"
+    needs:
+      - default/namespaces
+
+#  - name: keda
+#    namespace: keda
+#    chart: kedacore/keda
+#    values:
+#      - "./manifests/keda.yaml"
+#    needs:
+#      # Because of Pod/ServiceMonitors
+#      - monitoring/kube-prometheus-stack
+
+  - name: strimzi
+    namespace: strimzi
+    chart: strimzi/strimzi-kafka-operator
+    version: 0.34.0
+    values:
+      - "./manifests/strimzi.yaml"
+    needs:
+      # Because of Grafana Dashboard and Pod/ServiceMonitors
+      - monitoring/kube-prometheus-stack
+
+  - name: strimzi-kafka
+    namespace: kafka
+    # Must be set to properly install CRDs
+    disableValidationOnInstall: true
+    chart: "./charts/kafka-cluster"
+    needs:
+      - strimzi/strimzi
+
+  - name: k8kafka-cp-schema-registry
+    chart: "confluentinc/cp-helm-charts"
+    version: "0.6.0"
+    namespace: kafka
+    values:
+      - "./manifests/schema-registry.yaml"
+    needs:
+      - kafka/strimzi-kafka
+
+#  - name: k8kafka-cp-kafka-rest
+#    chart: "confluentinc/cp-helm-charts"
+#    version: "0.6.0"
+#    namespace: kafka
+#    values:
+#      - "./manifests/kafka-rest.yaml"
+#    needs:
+#      - kafka/strimzi-kafka
+
+  - name: redpanda-console
+    namespace: kafka
+    chart: "redpanda/console"
+    version: 0.5.6
+    values:
+      - "./manifests/redpanda-console.yaml"
+    needs:
+      - kafka/k8kafka-cp-schema-registry
