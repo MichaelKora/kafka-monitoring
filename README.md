@@ -43,6 +43,7 @@ choco install k9s # for Windows
 # install whole stack via helmfile
 helmfile apply
 ```
+![Running cluster should look somehow like this](docs/media/pods.png)
 
 # Kafka setup
 
@@ -68,7 +69,14 @@ kubectl apply -f deployment/consumerapp.yaml -n kafka
 
 # Grafana
 To view Grafana under `localhost:3000`, just port-forward the `kube-prometheus-stack-grafana` pod via `k9s`. <br>
-Login credentials default to `admin` for username and `prom-operator` for password.
+Login credentials default to `admin` for username and `prom-operator` for password. <br>
+Lots of dashboards already exist. Feel free to change and save under `deployment/charts/kafka-cluster/dashboards`.
 
-# Redpanda concole 
-To view Redpanda console under `localhost:8081`, just port-forward the `redpanda-console` pod via `k9s`.
+![Dashboards overview](docs/media/dashboards.png)
+
+# Redpanda concole
+Kafka is configured to auto-create topics. For managing and gaining insight of the kafka deployment, you can use the
+Redpanda console.
+To view the console, just port-forward the `redpanda-console` pod via `k9s` and visit `localhost:8081`.
+
+![Redpanda console topic overview](docs/media/redpanda_console.png)
