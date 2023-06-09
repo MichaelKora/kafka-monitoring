@@ -1,0 +1,12 @@
+imageTag: "v2.1.2"
+config:
+   K8S__deployment__cluster: true
+   SCHEMAREGISTRY__url: http://k8kafka-cp-schema-registry.monitoring:8081
+   KAFKACONNECT__url: http://k8kafka-cp-kafka-connect.monitoring:8083
+resources:
+   requests:
+       cpu: 200m
+       memory: 300Mi
+   limits:
+       cpu: 200m
+       memory: 300Mi

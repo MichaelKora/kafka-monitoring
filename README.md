@@ -1,11 +1,7 @@
 
-# Basic setup
+### Basic Setup & Requirements
 
 ```shell
-# install minikube  (see https://kubernetes.io/de/docs/tasks/tools/install-minikube/)
-brew install minikube # for Mac
-choco install minikube kubernetes-cli # for Windows 
-
 # install Kubernetes CLI (see https://kubernetes.io/de/docs/tasks/tools/install-kubectl/)
 brew install kubernetes-cli # for Mac
 choco install kubernetes-cli # for Windows
@@ -15,47 +11,44 @@ brew install derailed/k9s/k9s # for Mac
 choco install k9s # for Windows
 ```
 
-## Deploy Kafka with [Strimzi](https://strimzi.io/) 
+For the cluster setup including 
+- Kafka, 
+- Redpanda,
+- Prometheus and
+- Grafana <br>
+
+see **[SETUP.md](docs/SETUP.md)**.
+
+# Kafka setup
 
 ```shell
-# install Strimzi operator in namespace 'kafka'
-kubectl create -f 'https://strimzi.io/install/latest?namespace=kafka' -n kafka
-
-# deploy Kafka
-cd deployment
-kubectl apply -f kafka.yaml -n kafka
-
-# Grab bootstrap services node port and node address 
-# ! our applications (consumer/producer) need this address nodeAddress:nodePort as their bootstrap server
-kubectl get service kafka-cluster-kafka-external-bootstrap -o=jsonpath='{.spec.ports[0].nodePort}{"\n"}' -n=kafka
-kubectl get node minikube -o=jsonpath='{range .status.addresses[*]}{.type}{"\t"}{.address}{"\n"}'
+# create our test topic from within any broker pod (e.g. k8kafka-cp-kafka-0)
+kafka-topics --bootstrap-server k8kafka-cp-kafka-headless.monitoring:9092 \
+--topic topic1 \
+--create \
+--partitions 12 \
+--replication-factor 1
 ```
 
-##### Route docker commands to minikube
+### producerapp
 ```shell
-# Needs to be done every time you open a new terminal! 
-eval $(minikube -p minikube docker-env)
+# Build producer app and push to registry (assuming you are in the projects root dir)
+docker build -t localhost:12345/producerapp:latest -f ./producerapp/Dockerfile ./producerapp 
+docker push localhost:12345/producerapp:latest
 
-# Show available images in docker registry
-minikube image ls --format table
+# Run producer app in cluster under namespace monitoring
+kubectl apply -f deployment/producerapp.yaml -n monitoring
 ```
 
-### Deploy Producerapp
-
+### consumerapp
 ```shell
-# Build producer app (assuming you are in the projects root dir)
-docker build -t producerapp:latest -f ./producerapp/Dockerfile ./producerapp 
+# Build producer app and push to registry (assuming you are in the projects root dir)
+docker build -t localhost:12345/consumerapp:latest -f ./consumerapp/Dockerfile ./consumerapp 
+docker push localhost:12345/consumerapp:latest
 
-# Run producer app in cluster
-kubectl run producerapp --image=producerapp --image-pull-policy=Never --restart=Never -n=kafka
+# Run producer app in cluster under namespace monitoring
+kubectl apply -f deployment/consumerapp.yaml -n monitoring
 ```
 
-### Deploy Consumerapp
-
-```shell
-# Build consumer app (assuming you are in the projects root dir)
-docker build -t consumerapp:latest -f ./consumerapp/Dockerfile ./consumerapp
-
-# Run consumer app in cluster
-kubectl run consumerapp --image=consumerapp --image-pull-policy=Never --restart=Never -n=kafka
-```
+# Grafana
+To view Grafana under `localhost:3000`, just port-forward the `grafana-0` pod via `k9s`.

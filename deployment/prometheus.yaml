@@ -1,0 +1,76 @@
+alertmanager:
+  statefulSet:
+      enabled: true
+
+  resources:
+    requests:
+      cpu: 5m
+      memory: 10Mi
+    limits:
+      cpu: 100m
+      memory: 100Mi    
+
+configmapReload:
+  prometheus:
+    resources:
+      requests:
+        cpu: 5m
+        memory: 10Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+
+  alertmanager:    
+    resources:
+      requests:
+        cpu: 5m
+        memory: 10Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+
+kube-state-metrics:
+  metricLabelsAllowlist:
+    - deployments=[*]
+    - pods=[*]
+  resources:
+    requests:
+      cpu: 5m
+      memory: 10Mi
+    limits:
+      cpu: 100m
+      memory: 100Mi
+
+nodeExporter:
+  resources:
+    requests:
+      cpu: 5m
+      memory: 10Mi
+    limits:
+      cpu: 100m
+      memory: 100Mi    
+
+server:
+  statefulSet:
+    enabled: true
+  
+  persistentVolume:
+    enabled: true
+    size: 20Gi
+  
+  resources:
+    requests:
+      cpu: 150m
+      memory: 2G
+    limits:
+      cpu: 300m
+      memory: 4G
+
+pushgateway:
+  resources:
+    requests:
+      cpu: 5m
+      memory: 10Mi
+    limits:
+      cpu: 100m
+      memory: 100Mi

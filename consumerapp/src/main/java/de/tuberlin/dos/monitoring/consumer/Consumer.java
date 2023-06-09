@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class Consumer {
 
-	private static final String BOOTSTRAP_SERVERS = "192.168.49.2:30534,192.168.49.2:30223";
+	private static final String BOOTSTRAP_SERVERS = "k8kafka-cp-kafka-headless.monitoring:9092";
 	private static final String TOPIC = "topic1";
 	private static final String GROUP_ID = "group1";
 
