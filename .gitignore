@@ -33,6 +33,13 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+# common
 .env
 .vscode
+.idea
+**/*.iml
 .DS_Store
+
+# JAVA
+**/target/
+**/dependency-reduced-pom.xml

@@ -27,8 +27,11 @@ cp-kafka:
   brokers: 3
   imageTag: 7.2.2
   podManagementPolicy: Parallel
+  customEnv:
+    KAFKA_METRIC_REPORTERS: ""
   configurationOverrides:
     "auto.create.topics.enable": false
+    "confluent.support.metrics.enable": false
   # heapOptions: "-Xms512M -Xmx512M"
   resources:
     requests:

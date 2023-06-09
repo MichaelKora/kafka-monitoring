@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: producerapp
+spec:
+  containers:
+  - name: producerapp
+    image: k3d-monitoring-registry.localhost:12345/producerapp:latest
