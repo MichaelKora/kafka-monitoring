@@ -10,19 +10,6 @@ wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | ba
 brew install k3d # for Mac
 choco install k3d # for Windows
 
-# install k3d
-wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | bash
-
-# create k3d docker registry
-k3d registry create monitoring-registry.localhost --port 12345
-
-# Create cluster
-k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s
-
-# in case you want to stop/delete the cluster
-k3d cluster stop monitoring
-k3d cluster delete monitoring
-
 # create k3d docker registry
 k3d registry create monitoring-registry.localhost --port 12345
 
