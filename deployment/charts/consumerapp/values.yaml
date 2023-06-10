@@ -1,0 +1,11 @@
+name: consumerapp
+replicaCount: 1
+image:
+  repository: k3d-monitoring-registry.localhost:12345/consumerapp
+  pullPolicy:  Always
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 12
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80

@@ -86,3 +86,15 @@ releases:
       - "./manifests/redpanda-console.yaml"
     needs:
       - kafka/k8kafka-cp-schema-registry
+
+  - name: producerapp
+    namespace: kafka
+    chart: "./charts/producerapp"
+    needs:
+      - kafka/strimzi-kafka
+
+  - name: consumerapp
+    namespace: kafka
+    chart: "./charts/consumerapp"
+    needs:
+      - kafka/strimzi-kafka

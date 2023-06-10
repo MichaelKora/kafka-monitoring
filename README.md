@@ -47,26 +47,40 @@ helmfile apply
 ```
 ![Running cluster should look somehow like this](docs/media/pods.png)
 
-# Kafka setup
+# Producer and Consumer
+
+To modify deployments check `deployment/charts/producerapp` or `deployment/charts/consumerapp`. <br>
+
+### Update the version tag each time you make a change!
+If you updated the applications in any way, and you want the cluster to use the updated version,
+be aware, that you need to update the version tag each time you update one of the applications. 
+Otherwise, Kubernetes will not pull the new version from the registry. 
+
+To do so, update the `appversion` in the [producer app chart](deployment/charts/producerapp/Chart.yaml) or
+[consumer app chart](deployment/charts/consumerapp/Chart.yaml).
+Then, copy the version tag (without the quotation marks), expose the version as variable in your terminal 
+and tag the new image with the updated version while building and pushing like in the examples below.
 
 ### producerapp
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
-docker build -t localhost:12345/producerapp:latest -f ./producerapp/Dockerfile ./producerapp 
-docker push localhost:12345/producerapp:latest
-
-# Run producer app in cluster under namespace monitoring
-kubectl apply -f deployment/producerapp.yaml -n kafka 
+VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
+docker build -t localhost:12345/producerapp:$VERSION -f ./producerapp/Dockerfile ./producerapp 
+docker push localhost:12345/producerapp:$VERSION
+# apply new version to cluster
+cd deployment
+helmfile apply
 ```
 
 ### consumerapp
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
-docker build -t localhost:12345/consumerapp:latest -f ./consumerapp/Dockerfile ./consumerapp 
-docker push localhost:12345/consumerapp:latest
-
-# Run producer app in cluster under namespace monitoring
-kubectl apply -f deployment/consumerapp.yaml -n kafka 
+VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
+docker build -t localhost:12345/consumerapp:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
+docker push localhost:12345/consumerapp:$VERSION
+# apply new version to cluster
+cd deployment
+helmfile apply
 ```
 
 # Grafana

@@ -1,6 +1,8 @@
 package de.tuberlin.dos.monitoring.producer;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -30,7 +32,7 @@ public class Producer {
 			while (true) {
 
 				for (int i = 0; i < 100; i++) {
-					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, "Event: %s".formatted(i));
+					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, randomString());
 					producer.send(producerRecord);
 				}
 
@@ -76,6 +78,12 @@ public class Producer {
 				}
 			}
 		});
+	}
+
+	private static String randomString() {
+		byte[] array = new byte[8];
+		new Random().nextBytes(array);
+		return new String(array, StandardCharsets.UTF_8);
 	}
 
 }
