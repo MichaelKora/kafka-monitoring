@@ -1,0 +1,35 @@
+---
+- name: Download Docker public key
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /tmp/docker_apt-key.gpg
+
+- name: Dearmor public key
+  command: >
+    gpg --batch --dearmor
+    -o /etc/apt/keyrings/docker.gpg
+    /tmp/docker_apt-key.gpg
+  register: result
+  failed_when: result.rc == 1 and "File exists" not in result.stderr
+
+- name: Delete optional old repository source
+  ignore_errors: yes
+  file:
+    state: absent
+    path: /etc/apt/sources.list.d/docker.list
+
+- name: Add repository as source
+  lineinfile:
+    path: /etc/apt/sources.list.d/docker.list
+    line: deb [signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable
+    create: yes
+
+- name: Install docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    update_cache: yes

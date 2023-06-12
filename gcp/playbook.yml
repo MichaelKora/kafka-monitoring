@@ -1,0 +1,14 @@
+---
+- name: Control GCP if needed
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+    - gcp  
+- name: Install and setup Docker and Kubernetes
+  hosts: virtual_machines
+  roles:
+    - setup
+  tags:
+    - never
+    - setup

@@ -1,0 +1,8 @@
+---
+- name: Install Docker
+  import_tasks:
+    file: docker.yml
+
+- name: Install Kubernetes
+  import_tasks:
+    file: kubernetes.yml

@@ -1,0 +1,39 @@
+---
+- name: Install packages for kubernetes
+  apt:
+    name:
+        - ca-certificates
+        - curl
+
+- name: Download public key for repository
+  get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /tmp/kubernetes_apt-key.gpg
+
+- name: Deamor public key
+  command: >
+    gpg --batch --dearmor 
+    -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+    /tmp/kubernetes_apt-key.gpg
+  register: result
+  failed_when: result.rc == 1 and "File exists" not in result.stderr
+
+- name: Delete optional old repository source
+  ignore_errors: yes
+  file:
+    state: absent
+    path: /etc/apt/sources.list.d/kubernetes.list
+
+- name: Add repository as source
+  lineinfile:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    line: deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
+    create: yes
+
+- name: Install kubernetes
+  apt:
+    name:
+      - kubeadm
+      - kubelet
+      - kubectl
+    update_cache: yes
