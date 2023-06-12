@@ -1,12 +1,15 @@
 package dspj;
 
 
+import java.time.Duration;
+import java.util.Arrays;
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 /**
  * Hello world!
@@ -17,13 +20,14 @@ public class ConsumerApp
     
     public static void main( String[] args )
     {
-		Dotenv dotenv = Dotenv.configure()
-							  .filename("properties")
-							  .load();
+		if(args.length != 2) {
+			System.out.println("Amount of passed arguments don't match, should be exactly 2");
+		}
+		String groupId = args[0]; //"localhost:9092";
+        String topicName = args[1]; //"dspj-topic";
 
-		String bootstrapServers = dotenv.get("GROUP_ID");
-		String groupId = dotenv.get("GROUP_ID");
-		String topic = dotenv.get("TOPIC_NAME");
+		String bootstrapServers = groupId;
+		String topic = topicName;
 
 		// create consumer configs
 		Properties properties = new Properties();
@@ -35,52 +39,20 @@ public class ConsumerApp
 		properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
 		try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties)) {
-			createShutdownHook(consumer);
-			consumer.subscribe(List.of(topic));
+			consumer.subscribe(Arrays.asList(topic));
 			runPollingLoop(consumer);
 		}
 
 	}
 
 	private static void runPollingLoop(KafkaConsumer<String, String> consumer) {
-		try (consumer) {
 			while (true) {
-				ConsumerRecords<String, String> records =
-						consumer.poll(Duration.ofMillis(100));
-				for (ConsumerRecord<String, String> record : records) {
-					log.info("Key: " + record.key() + ", Value: " + record.value());
-					log.info("Partition: " + record.partition() + ", Offset:" + record.offset());
-				}
-
-			}
-		}
-		catch (WakeupException e) {
-			log.info("Wake up exception! Gonna shutdown consumer.");
-		}
-		catch (Exception e) {
-			log.error("Unexpected exception", e);
-		}
-		finally {
-			log.info("Consumer closed.");
-		}
-	}
-
-	private static void createShutdownHook(KafkaConsumer<String, String> consumer) {
-		// get a reference to the current thread
-		final Thread mainThread = Thread.currentThread();
-
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				log.info("Detected a shutdown, let's exit by calling consumer.wakeup()...");
-				consumer.wakeup();
-
-				try {
-					mainThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+						
+				for (ConsumerRecord<String, String> record : records){
+					System.out.print(record.value()+"\n");
 				}
 			}
-		});
-	}
+		}
 
 }
