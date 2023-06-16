@@ -1,12 +1,17 @@
 package de.tuberlin.dos.monitoring.consumer;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.concurrent.ThreadLocalRandom;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -18,15 +23,38 @@ public class Consumer {
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
 	private static final String TOPIC = "topic1";
 	private static final String GROUP_ID = "group1";
-
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
+	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
+	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
+	private static MessageDigest digest = null;
+
+	static {
+		try {
+			digest = MessageDigest.getInstance("SHA-256");
+		}
+		catch (NoSuchAlgorithmException e) {
+			throw new IllegalArgumentException("Requested non existent hashing algorithm...");
+		}
+	}
 
 	public static void main(String[] args) {
+
+		WorkloadStrategy workloadStrategy = pickWorkloadStrategy(args);
+
 		try (KafkaConsumer<String, String> consumer = createConsumer()) {
 			createShutdownHook(consumer);
 			consumer.subscribe(List.of(TOPIC));
-			runPollingLoop(consumer);
+			runPollingLoop(consumer, workloadStrategy);
 		}
+	}
+
+	private static WorkloadStrategy pickWorkloadStrategy(String[] args) {
+		if (args.length != 1) {
+			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU' or 'MEM'.");
+		}
+		if (Objects.equals(args[0], "CPU")) return Consumer::cpuIntenseStrategy;
+		if (Objects.equals(args[0], "MEM")) return Consumer::memoryIntenseStrategy;
+		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
 	}
 
 	private static KafkaConsumer<String, String> createConsumer() {
@@ -41,15 +69,14 @@ public class Consumer {
 		return new KafkaConsumer<>(properties);
 	}
 
-	private static void runPollingLoop(KafkaConsumer<String, String> consumer) {
+	private static void runPollingLoop(KafkaConsumer<String, String> consumer, WorkloadStrategy workloadStrategy) {
 		try (consumer) {
 			while (true) {
-				ConsumerRecords<String, String> records =
-						consumer.poll(Duration.ofMillis(1000));
-				for (ConsumerRecord<String, String> record : records) {
+				for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofMillis(100))) {
 					log.info("Got message: K<>: <%s> V<>: <%s> Partition: %s Offset: %s".formatted(
 							record.key(), record.value(), record.partition(), record.offset())
 					);
+					workloadStrategy.apply(record);
 				}
 				consumer.commitSync();
 			}
@@ -81,6 +108,30 @@ public class Consumer {
 				}
 			}
 		});
+	}
+
+	@FunctionalInterface
+	private interface WorkloadStrategy {
+		void apply(ConsumerRecord<String, String> record);
+	}
+
+	private static void cpuIntenseStrategy(ConsumerRecord<String, String> record) {
+		int[] ints = new int[1_000_000];
+		for (int i = 0; i < ints.length; i++) {
+			ints[i] = ThreadLocalRandom.current().nextInt(0, 1_000_000);
+		}
+		Arrays.sort(ints);
+	}
+
+	private static void memoryIntenseStrategy(ConsumerRecord<String, String> record) {
+		if (messageDump.size() == MESSAGE_DUMP_CAPACITY) {
+			messageDump.clear();
+		}
+		String concatenated = "";
+		for (int i = 0; i < 10; i++) {
+			concatenated  += record.value();
+		}
+		messageDump.add(concatenated);
 	}
 
 }
