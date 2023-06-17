@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 ###################
 # SSH
 ###################
@@ -134,8 +135,8 @@ gcloud compute disks resize consumer	\
 
 read -n 1 -r -s -p $'Press enter to to Shutdown all VMs...\n'
 
-glcoud compute instances stop backend-producer \
+gcloud compute instances stop backend-producer \
     -q
 
-glcoud compute instances stop consumer \
+gcloud compute instances stop consumer \
     -q
