@@ -84,6 +84,7 @@ helmfile apply
 ```
 
 # Grafana
+
 To view Grafana under `localhost:3000`, just port-forward the `kube-prometheus-stack-grafana` pod via `k9s`. <br>
 Login credentials default to `admin` for username and `prom-operator` for password. <br>
 Lots of dashboards already exist. Feel free to change and save under `deployment/charts/kafka-cluster/dashboards`.

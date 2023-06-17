@@ -1,0 +1,70 @@
+---
+- name: Generate local SSH key
+  command: >
+    ssh-keygen 
+    -t rsa 
+    -f "{{ ssh_key_path }}" 
+    -C "{{ remote_user }}" 
+    -b 2048 
+    -N '' 
+    -q
+  register: result
+  failed_when: result.rc == 1 and 'already exists' not in result.stdout
+
+- name: Modify File Permission
+  file:
+    path: "{{ ssh_key_path }}"
+    mode: 400
+
+- name: Read public key
+  shell: "cat {{ ssh_key_path }}.pub"
+  register: result
+
+- name: Parse public key
+  set_fact:
+    public_key: "{{ result.stdout }}"
+
+- name: Modify public key file for GCP
+  copy:
+    content: "{{ remote_user }}:{{ public_key }}"
+    dest: "{{ ssh_key_path }}_copy.pub"
+
+- name: Uploading public SSH key into project
+  command: gcloud compute project-info add-metadata	--metadata-from-file=ssh-keys="{{ ssh_key_path }}"_copy.pub
+
+- name: Creating a Firewall rules for ICMP and SSH
+  command: >
+    gcloud compute firewall-rules create 
+    ssh-icmp-ingress-rule 
+    --direction ingress
+    --target-tags "{{ target_tags }}"
+    --rules tcp:22,icmp
+    --action allow
+  register: result
+  failed_when: result.rc == 1 and "already exists" not in result.stderr
+
+- name: Get Project Name
+  command: gcloud compute project-info describe --format="value(name)"
+  register: result
+
+- name: Parse Project Name
+  set_fact:
+    project_name: "{{ result.stdout }}"
+
+- name: Creating VM
+  command: >
+    gcloud compute instances create "{{ item }}"
+    --project="{{ project_name }}"
+    --image=projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20230606
+    --zone=europe-west1-b
+    --machine-type=e2-standard-2
+    --tags="{{ target_tags }}"
+  loop: "{{ groups['virtual_machines'] }}"
+
+- name: Resize backend disk to 100GB
+  command: >
+    gcloud compute disks resize "{{ item }}"
+    --size=100GB
+    --zone=europe-west1-b
+    -q
+  loop: "{{ groups['virtual_machines'] }}"

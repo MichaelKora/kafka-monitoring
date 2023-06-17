@@ -1,0 +1,22 @@
+---
+- name: Creating VMs if necessary
+  import_tasks:
+    file: init.yml
+  tags:
+    - never
+    - init
+
+- name: Starting all VMs
+  import_tasks:
+    file: start.yml
+  tags:
+    - never
+    - start
+
+- name: Stopping all VMs
+  import_tasks:
+    file: stop.yml
+  tags:
+    - never
+    - stop
+

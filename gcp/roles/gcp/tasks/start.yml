@@ -1,0 +1,19 @@
+---
+- name: Start all virtual machines
+  command: gcloud compute instances start --zone=europe-west1-b {{ item }}
+  loop: "{{ groups['virtual_machines'] }}"
+
+- name: Get IP addresses
+  command: gcloud compute instances list
+  register: result
+
+- name: Update IP address in host inventory
+  lineinfile:
+    path: hosts.yml
+    regexp: "{{ item }}"
+    line: "{{ item }} ansible_host=\
+      {{ result.stdout | \
+      regex_search(item + '.*') | \
+      regex_search('((?:[0-9]{1,3}\\.{0,1}){4})\\s+RUNNING$') | \
+      regex_search('([0-9]+\\.{0,1}){4}') }}"
+  loop: "{{ groups['virtual_machines'] }}" 

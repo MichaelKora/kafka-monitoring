@@ -1,0 +1,4 @@
+---
+- name: Stop all virtual machines
+  command: gcloud compute instances stop --zone=europe-west1-b {{ item }}
+  loop: "{{ groups['virtual_machines'] }}"

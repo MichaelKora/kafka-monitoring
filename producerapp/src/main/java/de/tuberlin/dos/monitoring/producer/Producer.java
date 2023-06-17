@@ -19,6 +19,7 @@ public class Producer {
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
 	private static final String TOPIC = "topic1";
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
+	private static final int MESSAGES_PER_MINUTE = 10_000;
 
 	public static void main(String[] args) {
 		KafkaProducer<String, String> producer = createProducer();
@@ -31,13 +32,13 @@ public class Producer {
 		try (producer) {
 			while (true) {
 
-				for (int i = 0; i < 100; i++) {
+				for (int i = 0; i < MESSAGES_PER_MINUTE; i++) {
 					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, randomString());
 					producer.send(producerRecord);
 				}
 
 				producer.flush();
-				log.info("Sent 100 messages to topic %s. See ya again in 1 minute.".formatted(TOPIC));
+				log.info("Sent %s messages to topic %s. See ya again in 1 minute.".formatted(MESSAGES_PER_MINUTE, TOPIC));
 				TimeUnit.MINUTES.sleep(1);
 			}
 		}
