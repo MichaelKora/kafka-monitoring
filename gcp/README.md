@@ -6,6 +6,14 @@
 - Install the `gcloud` CLI using this guide https://cloud.google.com/sdk/docs/install
 - Activate the current project and make sure `gcloud` is running
 
+## 1.1 Add and Upload SSH keys
+- Store your **public** key into the folder `files/ssh/` and make sure that is has the ending `.pub`
+- Run the command
+```
+ansible-playbook playbook.yml -t init
+```
+- Alternatively it will be updated automatically when running the init tag
+
 ## 2. Creating all VMs
 If there isn't any VM in the project or you delete all, create them using
 
