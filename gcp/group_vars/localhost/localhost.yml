@@ -1,4 +1,3 @@
 ---
 target_tags: distributed-systems
 remote_user: root
-ssh_key_path: id_rsa
