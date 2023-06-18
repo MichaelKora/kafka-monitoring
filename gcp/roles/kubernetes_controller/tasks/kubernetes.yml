@@ -62,18 +62,15 @@
     state: absent
     path: /root/.kube
     force: true  
-  when: "'kubernetes_controller' in group_names"
 
 - name: Recreate configuration folder
   file:
     state: directory
     path: /root/.kube
     force: true
-  when: "'kubernetes_controller' in group_names"
 
 - name: Init Kubernetes for Controller
   command: kubeadm init
-  when: "'kubernetes_controller' in group_names"
 
 - name: Copy configuration
   copy:
@@ -82,25 +79,13 @@
     dest: /root/.kube/config
     owner: root
     group: root
+    mode: o-r g-r
     force: yes
-  when: "'kubernetes_controller' in group_names"
 
 - name: Get join command
   shell: kubeadm token create --print-join-command
   register: result
-  when: "'kubernetes_controller' in group_names"
 
 - name: Parse join command
   set_fact:
     join_command: "{{ result.stdout_lines[0] }}"
-  when: "'kubernetes_controller' in group_names"
-
-- name: Check if Node(s) can reach Kubernetes Controller
-  wait_for: "host={{ hostvars[groups['kubernetes_controller'][0]]['ansible_host'] }} port=6443 timeout=1"
-  when: "'kubernetes_nodes' in group_names"
-
-- name: Join Kubernetes Cluster
-  command: "{{ hostvars[groups['kubernetes_controller'][0]].join_command }}"
-  when: "'kubernetes_nodes' in group_names"
-
-  
