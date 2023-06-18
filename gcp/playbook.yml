@@ -1,14 +1,35 @@
 ---
-- name: Setup and Control GCP [if needed]
+- name: Setup and Control GCP
   hosts: localhost
   gather_facts: false
   connection: local
   roles:
     - gcp  
-- name: Install and Setup Docker and Kubernetes [if needed]
-  hosts: virtual_machines
+  tags:
+    - never
+
+- name: Install and Configure requirements for Kubernetes Controller
+  hosts: kubernetes_controllers
   roles:
+    - general
+    - kubernetes_controller
+  tags:
+    - never
     - setup
+
+- name: Install and Configure requirements for Kubernetes Nodes
+  hosts: kubernetes_nodes
+  roles:
+    - general
+    - kubernetes_node
+  tags:
+    - never
+    - setup
+
+- name: Setup Application
+  hosts: kubernetes_controllers
+  roles:
+    - application
   tags:
     - never
     - setup

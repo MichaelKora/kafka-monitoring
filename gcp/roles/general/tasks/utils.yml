@@ -1,0 +1,6 @@
+---
+- name: Install basic utils
+  apt:
+    name:
+      - net-tools
+      - vim
