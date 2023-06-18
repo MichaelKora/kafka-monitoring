@@ -1,0 +1,10 @@
+---
+- name: Setup Repository
+  include_tasks:
+    file: repository.yml
+    apply:
+      tags:
+        - repo
+        - setup
+  tags:
+    - repo

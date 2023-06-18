@@ -1,0 +1,10 @@
+---
+- name: Install Kubernetes
+  include_tasks:
+    file: kubernetes.yml
+    apply:
+      tags:
+        - kubernetes
+        - setup
+  tags:
+    - kubernetes

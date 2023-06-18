@@ -1,0 +1,56 @@
+---
+- name: Download Helm public key
+  get_url:
+    url: https://baltocdn.com/helm/signing.asc
+    dest: /tmp/helm_apt-key.gpg
+
+- name: Dearmor public key
+  command: >
+    gpg --batch --dearmor
+    -o /etc/apt/keyrings/helm.gpg
+    /tmp/helm_apt-key.gpg
+  register: result
+  failed_when: result.rc == 1 and "File exists" not in result.stderr
+
+- name: Delete optional old repository source
+  ignore_errors: yes
+  file:
+    state: absent
+    path: /etc/apt/sources.list.d/helm.list
+
+- name: Add repository as source
+  lineinfile:
+    path: /etc/apt/sources.list.d/helm.list
+    line: deb [arch=amd64 signed-by=/etc/apt/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main
+    create: yes
+
+- name: Install Helm
+  apt:
+    name:
+      - helm
+    update_cache: yes
+
+- name: Install Helm plugin helm-diff
+  command: 
+    cmd: helm plugin install https://github.com/databus23/helm-diff
+  register: result
+  failed_when: result.rc == 1 and "already exists" not in result.stderr
+
+- name: Download HelmFile
+  get_url:
+    url: https://github.com/helmfile/helmfile/releases/download/v0.154.0/helmfile_0.154.0_linux_amd64.tar.gz
+    dest: /tmp/
+
+- name: Unpack HelmFile
+  unarchive:
+    src: /tmp/helmfile_0.154.0_linux_amd64.tar.gz
+    remote_src: yes
+    dest: /tmp/ 
+
+
+- name: Install HelmFile binary
+  copy:
+    src: /tmp/helmfile
+    remote_src: yes
+    dest: /usr/bin/helmfile
+    mode: a+x

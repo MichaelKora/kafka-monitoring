@@ -1,0 +1,10 @@
+---
+- name: Clone project repository
+  git:
+    repo: 'https://github.com/MichaelKora/kafka-monitoring'
+    dest: /root/kafka-monitoring
+
+- name: Run HelmFile to bring up or update all services
+  command: 
+    cmd: helmfile apply
+    chdir: /root/kafka-monitoring/deployment

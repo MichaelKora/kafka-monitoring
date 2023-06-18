@@ -33,3 +33,13 @@
       - docker-buildx-plugin
       - docker-compose-plugin
     update_cache: yes
+
+- name: Copy default Containerd configuration
+  shell: /usr/bin/containerd config default > /etc/containerd/config.toml
+
+- name: Eenable and restart Containerd
+  systemd:
+    name: containerd
+    state: restarted
+    enabled: yes
+    daemon-reload: yes
