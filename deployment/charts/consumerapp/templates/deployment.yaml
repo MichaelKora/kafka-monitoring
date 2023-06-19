@@ -36,6 +36,9 @@ spec:
             {{  range .Values.arguments }}
             - {{ . }}
             {{ end }}
+          env:
+            - name: "TOPIC_NAME"
+              value: {{ .Values.topic }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

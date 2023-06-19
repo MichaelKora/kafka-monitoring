@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 public class Consumer {
 
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
-	private static final String TOPIC = "topic1";
+	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final String GROUP_ID = "group1";
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;

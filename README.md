@@ -49,6 +49,10 @@ helmfile apply
 
 # Producer and Consumer
 
+### Create a topic
+To create a topic, open a terminal inside the zookeeper pod and create a topic, like:
+`bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 12 --replication-factor 1`
+
 To modify deployments check `deployment/charts/producerapp` or `deployment/charts/consumerapp`. <br>
 
 ### Update the version tag each time you make a change!
