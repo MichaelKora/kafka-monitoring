@@ -1,7 +1,5 @@
 package de.tuberlin.dos.monitoring.consumer;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,16 +24,6 @@ public class Consumer {
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
 	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
-	private static MessageDigest digest = null;
-
-	static {
-		try {
-			digest = MessageDigest.getInstance("SHA-256");
-		}
-		catch (NoSuchAlgorithmException e) {
-			throw new IllegalArgumentException("Requested non existent hashing algorithm...");
-		}
-	}
 
 	public static void main(String[] args) {
 
