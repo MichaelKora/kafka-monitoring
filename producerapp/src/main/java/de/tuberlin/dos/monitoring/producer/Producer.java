@@ -1,6 +1,7 @@
 package de.tuberlin.dos.monitoring.producer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class Producer {
 
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
-	private static final String TOPIC = "topic1";
+	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
 	private static final int MESSAGES_PER_MINUTE = 10_000;
 
@@ -33,7 +34,9 @@ public class Producer {
 			while (true) {
 
 				for (int i = 0; i < MESSAGES_PER_MINUTE; i++) {
-					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, randomString());
+					String key = randomString();
+					String value = randomString();
+					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
 					producer.send(producerRecord);
 				}
 

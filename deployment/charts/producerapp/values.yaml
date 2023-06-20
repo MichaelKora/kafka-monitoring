@@ -3,3 +3,4 @@ replicaCount: 1
 image:
   repository: k3d-monitoring-registry.localhost:12345/producerapp
   pullPolicy:  Always
+topic: topic1

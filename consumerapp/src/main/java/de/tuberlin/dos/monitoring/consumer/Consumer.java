@@ -1,7 +1,5 @@
 package de.tuberlin.dos.monitoring.consumer;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,21 +19,11 @@ import org.slf4j.LoggerFactory;
 public class Consumer {
 
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
-	private static final String TOPIC = "topic1";
+	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final String GROUP_ID = "group1";
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
 	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
-	private static MessageDigest digest = null;
-
-	static {
-		try {
-			digest = MessageDigest.getInstance("SHA-256");
-		}
-		catch (NoSuchAlgorithmException e) {
-			throw new IllegalArgumentException("Requested non existent hashing algorithm...");
-		}
-	}
 
 	public static void main(String[] args) {
 
@@ -116,7 +104,7 @@ public class Consumer {
 	}
 
 	private static void cpuIntenseStrategy(ConsumerRecord<String, String> record) {
-		int[] ints = new int[1_000_000];
+		int[] ints = new int[100_000];
 		for (int i = 0; i < ints.length; i++) {
 			ints[i] = ThreadLocalRandom.current().nextInt(0, 1_000_000);
 		}
