@@ -1,12 +1,21 @@
 ---
-- name: Upload or Update SSH keys
-  include_tasks:
-    file: ssh.yml
-    apply:
-      tags: ['ssh', 'init']
-  vars:
-    - ssh_file: "{{ item }}"
+- name: Create temp. file with all public keys
+  shell: 'echo "root:$(cat {{ item }})" >> {{ public_keys_file }}' 
   loop: "{{ lookup('fileglob', 'files/ssh/*.pub', wantlist=True) }}"
+  tags:
+    - ssh
+
+- name: Uploading public SSH key into project
+  command: gcloud compute project-info add-metadata --metadata-from-file=ssh-keys="{{ public_keys_file }}"
+  changed_when: false  
+  tags:
+    - ssh
+
+- name: Delete temp. file with all public keys
+  file:
+    path: "{{ public_keys_file }}"
+    state: absent
+    force: yes
   tags:
     - ssh
 
