@@ -40,6 +40,12 @@
   shell: /usr/bin/containerd config default > /etc/containerd/config.toml
   changed_when: false
 
+- name: (BUGFIX) Enable SystemdCGroups for Containerd
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+
 - name: Eenable and restart Containerd
   systemd:
     name: containerd

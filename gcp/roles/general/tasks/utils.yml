@@ -4,3 +4,4 @@
     name:
       - net-tools
       - vim
+      - jq

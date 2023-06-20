@@ -1,4 +1,11 @@
 ---
+- name: Install Utils
+  include_tasks:
+    file: tasks/utils.yml
+    apply:
+      tags:
+        - setup
+
 - name: Install Docker
   include_tasks:
     file: tasks/docker.yml
@@ -9,6 +16,12 @@
   tags:
     - docker
 
-- name: Install Utils
+- name: Install Kubernetes
   include_tasks:
-    file: tasks/utils.yml
+    file: kubernetes.yml
+    apply:
+      tags:
+        - kubernetes
+        - setup
+  tags:
+    - kubernetes
