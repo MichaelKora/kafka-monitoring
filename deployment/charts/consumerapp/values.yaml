@@ -12,6 +12,7 @@ autoscaling:
 resources:
   limits:
     cpu: "250m"
+    memory: "128Mi"
 arguments:
   - CPU
 topic: topic1
