@@ -2,20 +2,26 @@
 - name: Creating VMs if necessary
   include_tasks:
     file: init.yml
+    apply:
+      tags:
+        - init
   tags:
-    - never
     - init
 
 - name: Starting all VMs
   include_tasks:
     file: start.yml
+    apply:
+      tags:
+        - start
   tags:
-    - never
     - start
 
 - name: Stopping all VMs
   include_tasks:
     file: stop.yml
+    apply:
+      tags:
+        - stop
   tags:
-    - never
     - stop

@@ -11,7 +11,7 @@
 
 - name: Update IP address in host inventory
   lineinfile:
-    path: hosts.yml
+    path: hosts.cfg
     regexp: "{{ item }}"
     line: "{{ item }} ansible_host=\
       {{ result.stdout | \
