@@ -8,14 +8,18 @@
   command: gcloud compute instances list
   register: result
   changed_when: false
+  tags:
+    - init
 
 - name: Update IP address in host inventory
-  lineinfile:
+  replace:
     path: hosts.cfg
-    regexp: "{{ item }}"
-    line: "{{ item }} ansible_host=\
+    regexp: "{{ item }} ansible_host=.*"
+    replace: "{{ item }} ansible_host=\
       {{ result.stdout | \
       regex_search(item + '.*') | \
       regex_search('((?:[0-9]{1,3}\\.{0,1}){4})\\s+RUNNING$') | \
       regex_search('([0-9]+\\.{0,1}){4}') }}"
   loop: "{{ groups['virtual_machines'] }}"
+  tags:
+    - init

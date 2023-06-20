@@ -16,6 +16,7 @@
         - start
   tags:
     - start
+    - init
 
 - name: Stopping all VMs
   include_tasks:
@@ -25,3 +26,12 @@
         - stop
   tags:
     - stop
+
+- name: Delete all VMs
+  include_tasks:
+    file: delete.yml
+    apply:
+      tags:
+        - delete
+  tags:
+    - delete
