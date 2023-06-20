@@ -3,7 +3,7 @@
   include_tasks:
     file: ssh.yml
     apply:
-        tags: ['ssh', 'init']
+      tags: ['ssh', 'init']
   vars:
     - ssh_file: "{{ item }}"
   loop: "{{ lookup('fileglob', 'files/ssh/*.pub', wantlist=True) }}"
@@ -12,31 +12,34 @@
 
 - name: Creating a Firewall rules for ICMP and SSH
   command: >
-    gcloud compute firewall-rules create 
-    ssh-icmp-ingress-rule 
+    gcloud compute firewall-rules create
+    ssh-icmp-ingress-rule
     --direction ingress
     --target-tags "{{ target_tags }}"
     --rules tcp:22,icmp
     --action allow
   register: result
   failed_when: result.rc == 1 and "already exists" not in result.stderr
+  changed_when: false
 
-- name: Creating a Firewall rules for Kubernetes Connection
 # Source Tags are not working on external IP addresses:
 # https://serverfault.com/questions/650519/gce-firewall-with-source-tags
 #    --source-tags "{{ target_tags }}"
+- name: Creating a Firewall rules for Kubernetes Connection
   command: >
-    gcloud compute firewall-rules create 
-    kubernetes-ingress-rule 
+    gcloud compute firewall-rules create
+    kubernetes-ingress-rule
     --direction ingress
     --rules tcp:6443
     --action allow
   register: result
   failed_when: result.rc == 1 and "already exists" not in result.stderr
+  changed_when: false
 
 - name: Get Project Name
   command: gcloud compute project-info describe --format="value(name)"
   register: result
+  changed_when: false
 
 - name: Parse Project Name
   set_fact:
@@ -51,6 +54,7 @@
     --machine-type=e2-standard-2
     --tags="{{ target_tags }}"
   loop: "{{ groups['virtual_machines'] }}"
+  changed_when: false
 
 - name: Resize backend disk to 100GB
   command: >
@@ -59,3 +63,4 @@
     --zone=europe-west1-b
     -q
   loop: "{{ groups['virtual_machines'] }}"
+  changed_when: false

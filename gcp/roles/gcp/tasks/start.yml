@@ -2,10 +2,12 @@
 - name: Start all virtual machines
   command: gcloud compute instances start --zone=europe-west1-b {{ item }}
   loop: "{{ groups['virtual_machines'] }}"
+  changed_when: false
 
 - name: Get IP addresses
   command: gcloud compute instances list
   register: result
+  changed_when: false
 
 - name: Update IP address in host inventory
   lineinfile:
@@ -16,4 +18,4 @@
       regex_search(item + '.*') | \
       regex_search('((?:[0-9]{1,3}\\.{0,1}){4})\\s+RUNNING$') | \
       regex_search('([0-9]+\\.{0,1}){4}') }}"
-  loop: "{{ groups['virtual_machines'] }}" 
+  loop: "{{ groups['virtual_machines'] }}"

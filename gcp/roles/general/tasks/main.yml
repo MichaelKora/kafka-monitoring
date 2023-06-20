@@ -1,7 +1,7 @@
 ---
 - name: Install Docker
   include_tasks:
-    file: docker.yml
+    file: tasks/docker.yml
     apply:
       tags:
         - docker
@@ -10,5 +10,5 @@
     - docker
 
 - name: Install Utils
-  import_tasks:
-    file: utils.yml
+  include_tasks:
+    file: tasks/utils.yml
