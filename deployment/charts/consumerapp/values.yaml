@@ -1,7 +1,9 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: k3d-monitoring-registry.localhost:12345/consumerapp
+  repository: 192.168.252.146:5000/pj-ds/consumerapp
+  # for local development
+  # repository: k3d-monitoring-registry.localhost:12345/consumerapp
   pullPolicy:  Always
 autoscaling:
   enabled: true
