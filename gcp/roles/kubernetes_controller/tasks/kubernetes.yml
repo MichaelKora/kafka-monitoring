@@ -86,7 +86,7 @@
     dest: /root/.kube/config
     owner: root
     group: root
-    mode: o-r g-r
+    mode: u+rw,o-rwx,g-rwx
     force: true
 
 - name: Get join command

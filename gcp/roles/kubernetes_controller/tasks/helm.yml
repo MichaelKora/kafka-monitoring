@@ -47,7 +47,7 @@
 - name: Unpack HelmFile
   unarchive:
     src: /tmp/helmfile_0.154.0_linux_amd64.tar.gz
-    remote_src: false
+    remote_src: true
     dest: /tmp/
 
 
