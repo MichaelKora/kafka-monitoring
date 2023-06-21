@@ -3,7 +3,5 @@ name: producerapp
 replicaCount: 0
 image:
   repository: 192.168.252.146:5000/pj-ds/producerapp
-  # for local development
-  # repository: k3d-monitoring-registry.localhost:12345/producerapp
   pullPolicy:  Always
 topic: topic1

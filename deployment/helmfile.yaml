@@ -1,3 +1,9 @@
+environments:
+  local:
+  cloud:
+
+---
+
 repositories:
   - name: strimzi
     url: https://strimzi.io/charts/
@@ -90,11 +96,15 @@ releases:
   - name: producerapp
     namespace: kafka
     chart: "./charts/producerapp"
+    values:
+      - "./charts/producerapp/values.{{ .Environment.Name }}.yaml"
     needs:
       - kafka/strimzi-kafka
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
+    values:
+      - "./charts/consumerapp/values.{{ .Environment.Name }}.yaml"
     needs:
       - kafka/strimzi-kafka

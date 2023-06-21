@@ -20,29 +20,21 @@ public class Producer {
 	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092";
 	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
-	private static final int MESSAGES_PER_MINUTE = 10_000;
 
 	public static void main(String[] args) {
+
+		WorkloadStrategy workloadStrategy = Producer::staticStrategy;
+
 		KafkaProducer<String, String> producer = createProducer();
 		createShutdownHook(producer);
-		runMessageLoop(producer);
+		runMessageLoop(producer, workloadStrategy);
 	}
 
-	private static void runMessageLoop(KafkaProducer<String, String> producer) {
+	private static void runMessageLoop(KafkaProducer<String, String> producer, WorkloadStrategy workloadStrategy) {
 
 		try (producer) {
 			while (true) {
-
-				for (int i = 0; i < MESSAGES_PER_MINUTE; i++) {
-					String key = randomString();
-					String value = randomString();
-					ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
-					producer.send(producerRecord);
-				}
-
-				producer.flush();
-				log.info("Sent %s messages to topic %s. See ya again in 1 minute.".formatted(MESSAGES_PER_MINUTE, TOPIC));
-				TimeUnit.MINUTES.sleep(1);
+				workloadStrategy.apply(producer);
 			}
 		}
 		catch (WakeupException e) {
@@ -88,6 +80,54 @@ public class Producer {
 		byte[] array = new byte[8];
 		new Random().nextBytes(array);
 		return new String(array, StandardCharsets.UTF_8);
+	}
+
+	@FunctionalInterface
+	private interface WorkloadStrategy {
+		void apply(KafkaProducer<String, String> producer);
+	}
+
+	private static void staticStrategy(KafkaProducer<String, String> producer) {
+
+		final int MESSAGES_PER_MINUTE = 10_000;
+
+		// scale up to 30k messages
+		for (int i = 1; i <= 3; i++) {
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 10);
+		}
+
+		// scale down to 10k messages
+		for (int i = 2; i > 0; i--) {
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 10);
+		}
+	}
+
+	private static void sendMessages(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
+
+		for (int j = 0; j < count; j++) {
+
+			for (int i = 0; i < messagesPerMinute; i++) {
+				String key = randomString();
+				String value = randomString();
+				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
+				producer.send(producerRecord);
+			}
+
+			producer.flush();
+			log.info("Sent %s messages to topic %s.".formatted(messagesPerMinute, TOPIC));
+
+			sleep(1);
+
+		}
+	}
+
+	private static void sleep(int minutes) {
+		try {
+			TimeUnit.MINUTES.sleep(minutes);
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException("Could not send the producer to bed...", e);
+		}
 	}
 
 }
