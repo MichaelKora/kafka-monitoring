@@ -4,7 +4,7 @@
   gather_facts: false
   connection: local
   roles:
-    - gcp  
+    - gcp
   tags:
     - never
 

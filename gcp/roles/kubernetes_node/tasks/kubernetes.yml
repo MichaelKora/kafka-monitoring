@@ -1,64 +1,18 @@
 ---
-- name: Install packages for kubernetes
-  apt:
-    name:
-        - ca-certificates
-        - curl
-
-- name: Download public key for repository
-  get_url:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    dest: /tmp/kubernetes_apt-key.gpg
-
-- name: Deamor public key
-  command: >
-    gpg --batch --dearmor 
-    -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
-    /tmp/kubernetes_apt-key.gpg
-  register: result
-  failed_when: result.rc == 1 and "File exists" not in result.stderr
-
-- name: Delete optional old repository source
-  ignore_errors: yes
-  file:
-    state: absent
-    path: /etc/apt/sources.list.d/kubernetes.list
-
-- name: Add repository as source
-  lineinfile:
-    path: /etc/apt/sources.list.d/kubernetes.list
-    line: deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
-    create: yes
-
-- name: Install kubernetes
-  apt:
-    name:
-      - kubeadm
-      - kubelet
-      - kubectl
-    update_cache: yes
-
-- name: Create sysctl file for Kubernetes
-  copy:
-    content: ""
-    dest: /etc/sysctl.d/99-kubernetes.conf
-    force: no
-
-- name: Enable IPv4 Forwarding
-  lineinfile:
-    path: /etc/sysctl.d/99-kubernetes.conf
-    line: "{{ item }}"
-  with_items:
-    - 'net.ipv4.ip_forward = 1'
-
-- name: Apply sysctl params without reboot
-  command: sysctl --system    
-
 - name: Reset old Kubernetes configuration
   command: kubeadm reset -f
+  changed_when: false
+  tags:
+    - never
+    - join
 
 - name: Check if Node(s) can reach Kubernetes Controller
-  wait_for: "host={{ hostvars[groups['kubernetes_controllers'][0]]['ansible_host'] }} port=6443 timeout=1"
+  wait_for: "host={{ hostvars[groups['kubernetes_controllers'][0]]['local_address'] }} port=6443 timeout=1"
+  tags:
+    - join
 
 - name: Join Kubernetes Cluster
-  command: "{{ hostvars[groups['kubernetes_controllers'][0]].join_command }}" 
+  command: "{{ hostvars[groups['kubernetes_controllers'][0]].join_command }}"
+  changed_when: false
+  tags:
+    - join

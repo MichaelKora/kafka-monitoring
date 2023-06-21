@@ -49,3 +49,5 @@ gcp/id_rsa*
 
 # local dev
 benji
+.vault_pass
+

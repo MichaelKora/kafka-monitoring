@@ -43,7 +43,8 @@ choco install k9s # for Windows
 ##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
 ```shell
 # install whole stack via helmfile (from within `deployment` dir)
-helmfile apply
+helmfile --environment local apply # for local development
+helmfile --environment cloud apply # for Google Cloud 
 ```
 ![Running cluster should look somehow like this](docs/media/pods.png)
 
@@ -73,7 +74,7 @@ docker build -t localhost:12345/producerapp:$VERSION -f ./producerapp/Dockerfile
 docker push localhost:12345/producerapp:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile apply
+helmfile --environment local apply
 ```
 
 ### consumerapp
@@ -84,7 +85,7 @@ docker build -t localhost:12345/consumerapp:$VERSION -f ./consumerapp/Dockerfile
 docker push localhost:12345/consumerapp:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile apply
+helmfile --environment local apply
 ```
 
 # Grafana

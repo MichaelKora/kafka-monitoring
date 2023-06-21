@@ -10,31 +10,34 @@
     -o /etc/apt/keyrings/helm.gpg
     /tmp/helm_apt-key.gpg
   register: result
-  failed_when: result.rc == 1 and "File exists" not in result.stderr
+  failed_when: result.rc != 0 and "File exists" not in result.stderr
+  changed_when: false
 
 - name: Delete optional old repository source
-  ignore_errors: yes
   file:
     state: absent
     path: /etc/apt/sources.list.d/helm.list
+    force: true
 
 - name: Add repository as source
   lineinfile:
     path: /etc/apt/sources.list.d/helm.list
     line: deb [arch=amd64 signed-by=/etc/apt/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main
-    create: yes
+    create: true
+    mode: 0700
 
 - name: Install Helm
   apt:
     name:
       - helm
-    update_cache: yes
+    update_cache: true
 
 - name: Install Helm plugin helm-diff
-  command: 
+  command:
     cmd: helm plugin install https://github.com/databus23/helm-diff
   register: result
   failed_when: result.rc == 1 and "already exists" not in result.stderr
+  changed_when: false
 
 - name: Download HelmFile
   get_url:
@@ -44,13 +47,13 @@
 - name: Unpack HelmFile
   unarchive:
     src: /tmp/helmfile_0.154.0_linux_amd64.tar.gz
-    remote_src: yes
-    dest: /tmp/ 
+    remote_src: true
+    dest: /tmp/
 
 
 - name: Install HelmFile binary
   copy:
     src: /tmp/helmfile
-    remote_src: yes
+    remote_src: true
     dest: /usr/bin/helmfile
     mode: a+x

@@ -1,5 +1,6 @@
 name: producerapp
-replicaCount: 1
+# just scale up in case you want to start producing messages
+replicaCount: 0
 image:
   repository: k3d-monitoring-registry.localhost:12345/producerapp
   pullPolicy:  Always

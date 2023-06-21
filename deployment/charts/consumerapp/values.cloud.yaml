@@ -1,7 +1,7 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: k3d-monitoring-registry.localhost:12345/consumerapp
+  repository: avarange/pj-ds-consumerapp
   pullPolicy:  Always
 autoscaling:
   enabled: true
@@ -12,6 +12,7 @@ autoscaling:
 resources:
   limits:
     cpu: "250m"
+    memory: "128Mi"
 arguments:
   - CPU
 topic: topic1

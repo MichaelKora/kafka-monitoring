@@ -8,6 +8,7 @@
         - setup
   tags:
     - kubernetes
+    - join
 
 - name: Install Helm, Helm-Diff and HelmFile
   include_tasks:
@@ -17,4 +18,4 @@
         - helm
         - setup
   tags:
-    - helm  
+    - helm

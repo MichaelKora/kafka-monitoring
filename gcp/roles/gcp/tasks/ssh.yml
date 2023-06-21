@@ -1,6 +1,0 @@
-- name: Read public key
-  shell: "cat {{ ssh_file }}"
-  register: result
-
-- name: Uploading public SSH key into project
-  command: gcloud compute project-info add-metadata	--metadata=ssh-keys="{{ remote_user }}:{{ result.stdout }}"

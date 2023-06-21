@@ -1,0 +1,42 @@
+---
+# Dummy Account als Workaround
+- name: Login into Docker Hub
+  community.docker.docker_login:
+    username: "{{ vault_docker_hub_username }}"
+    password: "{{ vault_docker_hub_password }}"
+
+- name: Get consumer app version
+  slurp:
+    src: /root/kafka-monitoring/deployment/charts/consumerapp/Chart.yaml
+  register: result
+
+- name: Extract consumer app version
+  set_fact:
+    consumer_app_version: "{{ result.content | b64decode | regex_search('appVersion:\\s+\"(.*)\"', '\\1') | first }}"
+
+- name: Building consumer app
+  community.docker.docker_image:
+    build:
+      path: /root/kafka-monitoring/consumerapp
+    name: avarange/pj-ds-consumer
+    tag: "{{ consumer_app_version }}"
+    push: true
+    source: build
+
+- name: Get producer app version
+  slurp:
+    src: /root/kafka-monitoring/deployment/charts/producerapp/Chart.yaml
+  register: result
+
+- name: Extract producer app version
+  set_fact:
+    producer_app_version: "{{ result.content | b64decode | regex_search('appVersion:\\s+\"(.*)\"', '\\1') | first }}"
+
+- name: Building producer app
+  community.docker.docker_image:
+    build:
+      path: /root/kafka-monitoring/producerapp
+    name: avarange/pj-ds-producer
+    tag: "{{ producer_app_version }}"
+    push: true
+    source: build

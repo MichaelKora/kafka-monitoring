@@ -4,3 +4,11 @@
     name:
       - net-tools
       - vim
+      - jq
+      - python3-pip
+    update_cache: true
+
+- name: Install pip packages
+  pip:
+    name:
+      - docker-py

@@ -5,8 +5,9 @@
 - Install ansible using your package manager like `sudo apt install ansible` or follow this guide https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 - Install the `gcloud` CLI using this guide https://cloud.google.com/sdk/docs/install
 - Activate the current project and make sure `gcloud` is running
+- Create local file `.vault_pass` and insert the password
 
-## 1.1 Configure GCO
+## 1.1 Configure GCP
 - Store your **public** key into the folder `files/ssh/` and make sure that is has the ending `.pub`
 - Run the command
 ```
@@ -19,6 +20,10 @@ This command will:
 
 **Attention**: Remeber to stop them if not needed
 
+For just updateing the ssh keys run
+```
+ansible-playbook playbook.yml -t ssh
+```
 
 ## 3. Starting all VMs
 Run this command to start all VMs.
@@ -26,9 +31,6 @@ Run this command to start all VMs.
 ```
 ansible-playbook playbook.yml -t start
 ```
-
-**Attention**
-You must run this command even if you just created the VMs, because it will update the IP addresse in the inventory.
 
 ## 4. Stoping all VMs
 Run this command to stop all VMs.
@@ -43,6 +45,12 @@ Run this command to install Docker and Kubernetes, Helm, HelmFile (and all depen
 ```
 ansible-playbook playbook.yml -t setup
 ```
+
+For debugging you can run steps during the setup seperately. Available tags are:
+- **setup**: all dependencies are installed
+- **docker**: only install and setup docker
+- **kubernetes**: only install and setup kubernetes
+- **repo**: for cloning the application repository and running the helmfile
 
 There are the following ansible roles:
 - **general**: for all packages and tasks that will be run the same on all machines

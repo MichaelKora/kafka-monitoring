@@ -1,22 +1,38 @@
 ---
 - name: Creating VMs if necessary
-  import_tasks:
+  include_tasks:
     file: init.yml
+    apply:
+      tags:
+        - init
   tags:
-    - never
     - init
+    - ssh
 
 - name: Starting all VMs
-  import_tasks:
+  include_tasks:
     file: start.yml
+    apply:
+      tags:
+        - start
   tags:
-    - never
     - start
+    - init
 
 - name: Stopping all VMs
-  import_tasks:
+  include_tasks:
     file: stop.yml
+    apply:
+      tags:
+        - stop
   tags:
-    - never
     - stop
 
+- name: Delete all VMs
+  include_tasks:
+    file: delete.yml
+    apply:
+      tags:
+        - delete
+  tags:
+    - delete

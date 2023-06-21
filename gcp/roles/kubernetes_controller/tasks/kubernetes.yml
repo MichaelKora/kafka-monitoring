@@ -1,91 +1,66 @@
 ---
-- name: Install packages for kubernetes
-  apt:
-    name:
-        - ca-certificates
-        - curl
-
-- name: Download public key for repository
-  get_url:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    dest: /tmp/kubernetes_apt-key.gpg
-
-- name: Deamor public key
-  command: >
-    gpg --batch --dearmor 
-    -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
-    /tmp/kubernetes_apt-key.gpg
-  register: result
-  failed_when: result.rc == 1 and "File exists" not in result.stderr
-
-- name: Delete optional old repository source
-  ignore_errors: yes
-  file:
-    state: absent
-    path: /etc/apt/sources.list.d/kubernetes.list
-
-- name: Add repository as source
-  lineinfile:
-    path: /etc/apt/sources.list.d/kubernetes.list
-    line: deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main
-    create: yes
-
-- name: Install kubernetes
-  apt:
-    name:
-      - kubeadm
-      - kubelet
-      - kubectl
-    update_cache: yes
-
-- name: Create sysctl file for Kubernetes
-  copy:
-    content: ""
-    dest: /etc/sysctl.d/99-kubernetes.conf
-    force: no
-
-- name: Enable IPv4 Forwarding
-  lineinfile:
-    path: /etc/sysctl.d/99-kubernetes.conf
-    line: "{{ item }}"
-  with_items:
-    - 'net.ipv4.ip_forward = 1'
-
-- name: Apply sysctl params without reboot
-  command: sysctl --system    
-
-- name: Reset old Kubernetes configuration
-  command: kubeadm reset -f
-
 - name: Delete old Kubernetes configuration files
   file:
     state: absent
     path: /root/.kube
-    force: true  
+    force: true
 
 - name: Recreate configuration folder
   file:
     state: directory
     path: /root/.kube
     force: true
+    mode: 0700
+
+- name: Get local network address
+  shell: |
+    set -o pipefail
+    ip --json a s | jq -r '.[] | if .ifname == "ens4" then .addr_info[] | if .family == "inet" then .local else empty end else empty end'
+  args:
+    executable: /bin/bash
+  register: result
+  failed_when: result.rc != 0 or not result.stdout
+  changed_when: false
+  tags:
+    - join
+
+- name: Parse local network address
+  set_fact:
+    local_address: "{{ result.stdout }}"
+  tags:
+    - join
 
 - name: Init Kubernetes for Controller
-  command: kubeadm init
+  command: >
+    kubeadm init
+    --apiserver-advertise-address="{{ local_address }}"
+    --apiserver-cert-extra-sans="{{ local_address }}"
+    --pod-network-cidr="192.168.0.0/16"
+  changed_when: false
 
 - name: Copy configuration
   copy:
     src: /etc/kubernetes/admin.conf
-    remote_src: yes
+    remote_src: true
     dest: /root/.kube/config
     owner: root
     group: root
-    mode: o-r g-r
-    force: yes
+    mode: u+rw,o-rwx,g-rwx
+    force: true
+
+- name: Install network plugin - Callisto
+  command: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+  changed_when: false
 
 - name: Get join command
-  shell: kubeadm token create --print-join-command
+  command: kubeadm token create --print-join-command
   register: result
+  changed_when: false
+  tags:
+    - join
 
 - name: Parse join command
   set_fact:
     join_command: "{{ result.stdout_lines[0] }}"
+  tags:
+    - join

@@ -1,3 +1,4 @@
 ---
 target_tags: distributed-systems
 remote_user: root
+public_keys_file: files/ssh/ssh_keys.pub
