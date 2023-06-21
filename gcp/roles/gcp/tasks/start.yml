@@ -14,7 +14,7 @@
 - name: Update IP address in host inventory
   replace:
     path: hosts.cfg
-    regexp: "{{ item }} ansible_host=.*"
+    regexp: "{{ item }}.*"
     replace: "{{ item }} ansible_host=\
       {{ result.stdout | \
       regex_search(item + '.*') | \

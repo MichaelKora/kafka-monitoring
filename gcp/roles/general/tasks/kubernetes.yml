@@ -9,6 +9,7 @@
   get_url:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     dest: /tmp/kubernetes_apt-key.gpg
+    timeout: 60
 
 - name: Deamor public key
   command: >
