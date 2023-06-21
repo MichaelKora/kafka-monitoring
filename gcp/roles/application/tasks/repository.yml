@@ -18,6 +18,6 @@
 
 - name: Run HelmFile to bring up or update all services
   command:
-    cmd: helmfile --environment cloud apply
+    cmd: helmfile apply
     chdir: /root/kafka-monitoring/deployment
   changed_when: false

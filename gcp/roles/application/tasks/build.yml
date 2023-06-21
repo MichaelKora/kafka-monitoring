@@ -40,3 +40,15 @@
     tag: "{{ producer_app_version }}"
     push: true
     source: build
+
+- name: Update helm repo for consumer app
+  lineinfile:
+    path: /root/kafka-monitoring/deployment/charts/consumerapp/values.yaml
+    regexp: "^\\s+repository: .*"
+    line: "  repository: avarange/pj-ds-consumer"
+
+- name: Update helm repo for producer app
+  lineinfile:
+    path: /root/kafka-monitoring/deployment/charts/producerapp/values.yaml
+    regexp: "^\\s+repository: .*"
+    line: "  repository: avarange/pj-ds-producer"

@@ -9,6 +9,8 @@ autoscaling:
   maxReplicas: 12
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
+  scaleUpWindow: 0
+  scaleDownWindow: 300
 resources:
   limits:
     cpu: "250m"
