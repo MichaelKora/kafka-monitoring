@@ -7,8 +7,6 @@ repositories:
     url: https://confluentinc.github.io/cp-helm-charts/
   - name: redpanda
     url: https://charts.redpanda.com/
-  - name: twuni
-    url: https://helm.twun.io
 #  - name: kedacore
 #    url: https://kedacore.github.io/charts
 
@@ -43,10 +41,6 @@ releases:
 #    needs:
 #      # Because of Pod/ServiceMonitors
 #      - monitoring/kube-prometheus-stack
-
-  - name: docker-registry
-    namespace: default
-    chart: twuni/docker-registry
 
   - name: strimzi
     namespace: strimzi
