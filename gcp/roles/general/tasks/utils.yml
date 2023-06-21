@@ -5,3 +5,9 @@
       - net-tools
       - vim
       - jq
+      - python3-pip
+
+- name: Install pip packages
+  pip:
+    name:
+      - docker-py

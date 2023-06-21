@@ -23,3 +23,10 @@
   loop: "{{ groups['virtual_machines'] }}"
   tags:
     - init
+
+- name: Show IP addresses
+  debug:
+    msg: "ssh root@{{ hostvars[item]['ansible_host'] }}"
+  loop: "{{ groups['virtual_machines'] }}"
+  tags:
+    - init

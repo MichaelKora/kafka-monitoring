@@ -4,9 +4,20 @@
     repo: 'https://github.com/MichaelKora/kafka-monitoring'
     dest: /root/kafka-monitoring
     version: main
+    force: true
 
-# - name: Run HelmFile to bring up or update all services
-#   command:
-#     cmd: helmfile apply
-#     chdir: /root/kafka-monitoring/deployment
-#   changed_when: false
+- name: Creating Application Images
+  include_tasks:
+    file: build.yml
+    apply:
+      tags:
+        - build
+        - setup
+  tags:
+    - build
+
+- name: Run HelmFile to bring up or update all services
+  command:
+    cmd: helmfile apply
+    chdir: /root/kafka-monitoring/deployment
+  changed_when: false
