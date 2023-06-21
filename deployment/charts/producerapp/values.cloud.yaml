@@ -2,6 +2,6 @@ name: producerapp
 # just scale up in case you want to start producing messages
 replicaCount: 0
 image:
-  repository: 192.168.252.146:5000/pj-ds/producerapp
+  repository: avarange/pj-ds-producerapp
   pullPolicy:  Always
 topic: topic1

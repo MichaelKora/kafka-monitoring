@@ -1,7 +1,7 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: 192.168.252.146:5000/pj-ds/consumerapp
+  repository: avarange/pj-ds-consumerapp
   pullPolicy:  Always
 autoscaling:
   enabled: true
