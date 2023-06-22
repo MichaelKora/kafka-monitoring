@@ -43,8 +43,8 @@ choco install k9s # for Windows
 ##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
 ```shell
 # install whole stack via helmfile (from within `deployment` dir)
-helmfile --environment local apply # for local development
-helmfile --environment cloud apply # for Google Cloud 
+helmfile apply # for cloud environment
+helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/ # for local development with k3d
 ```
 ![Running cluster should look somehow like this](docs/media/pods.png)
 
@@ -74,7 +74,7 @@ docker build -t localhost:12345/producerapp:$VERSION -f ./producerapp/Dockerfile
 docker push localhost:12345/producerapp:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile --environment local apply
+helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/
 ```
 
 ### consumerapp
@@ -85,7 +85,7 @@ docker build -t localhost:12345/consumerapp:$VERSION -f ./consumerapp/Dockerfile
 docker push localhost:12345/consumerapp:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile --environment local apply
+helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/
 ```
 
 # Grafana

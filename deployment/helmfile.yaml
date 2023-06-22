@@ -92,9 +92,15 @@ releases:
     chart: "./charts/producerapp"
     needs:
       - kafka/strimzi-kafka
+    values:
+      - image:
+          repository: {{ env "REPOSITORY" | default "avarange/pj-ds-" }}producerapp
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
       - kafka/strimzi-kafka
+    values:
+      - image:
+          repository: {{ env "REPOSITORY" | default "avarange/pj-ds-" }}consumerapp
