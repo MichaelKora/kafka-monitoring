@@ -10,11 +10,8 @@ wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | ba
 brew install k3d # for Mac
 choco install k3d # for Windows
 
-# create k3d docker registry
-k3d registry create monitoring-registry.localhost --port 12345
-
 # Create cluster
-k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s
+k3d cluster create monitoring --image rancher/k3s
 
 # in case you want to stop/delete the cluster
 k3d cluster stop monitoring
@@ -43,8 +40,7 @@ choco install k9s # for Windows
 ##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
 ```shell
 # install whole stack via helmfile (from within `deployment` dir)
-helmfile apply # for cloud environment
-helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/ # for local development with k3d
+helmfile apply
 ```
 ![Running cluster should look somehow like this](docs/media/pods.png)
 
@@ -70,22 +66,22 @@ and tag the new image with the updated version while building and pushing like i
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
 VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t localhost:12345/producerapp:$VERSION -f ./producerapp/Dockerfile ./producerapp 
-docker push localhost:12345/producerapp:$VERSION
+docker build -t avarange/pj-ds-producer:$VERSION -f ./producerapp/Dockerfile ./producerapp 
+docker push avarange/pj-ds-producer:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/
+helmfile apply 
 ```
 
 ### consumerapp
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
 VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t localhost:12345/consumerapp:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
-docker push localhost:12345/consumerapp:$VERSION
+docker build -t avarange/pj-ds-consumer:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
+docker push avarange/pj-ds-consumer:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile apply --set REPOSITORY=k3d-monitoring-registry.localhost:12345/
+helmfile apply
 ```
 
 # Grafana

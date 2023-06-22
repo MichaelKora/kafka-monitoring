@@ -1,6 +1,7 @@
 name: consumerapp
 replicaCount: 1
 image:
+  repository: avarange/pj-ds-consumer
   pullPolicy:  Always
 
 autoscaling:
