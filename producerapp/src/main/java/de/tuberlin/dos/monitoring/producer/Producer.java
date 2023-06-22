@@ -76,12 +76,6 @@ public class Producer {
 		});
 	}
 
-	private static String randomString() {
-		byte[] array = new byte[8];
-		new Random().nextBytes(array);
-		return new String(array, StandardCharsets.UTF_8);
-	}
-
 	@FunctionalInterface
 	private interface WorkloadStrategy {
 		void apply(KafkaProducer<String, String> producer);
@@ -93,12 +87,12 @@ public class Producer {
 
 		// scale up to 30k messages
 		for (int i = 1; i <= 3; i++) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 10);
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 20);
 		}
 
 		// scale down to 10k messages
 		for (int i = 2; i > 0; i--) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 10);
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 20);
 		}
 	}
 
@@ -119,6 +113,12 @@ public class Producer {
 			sleep(1);
 
 		}
+	}
+
+	private static String randomString() {
+		byte[] array = new byte[8];
+		new Random().nextBytes(array);
+		return new String(array, StandardCharsets.UTF_8);
 	}
 
 	private static void sleep(int minutes) {
