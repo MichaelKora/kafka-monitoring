@@ -37,6 +37,7 @@ choco install k9s # for Windows
 
 # Deployment of whole stack
 
+
 ##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
 ```shell
 # install whole stack via helmfile (from within `deployment` dir)

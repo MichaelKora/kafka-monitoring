@@ -86,13 +86,13 @@ public class Producer {
 		final int MESSAGES_PER_MINUTE = 10_000;
 
 		// scale up to 30k messages
-		for (int i = 1; i <= 3; i++) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 20);
+		for (int i = 1; i <= 4; i++) {
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 30);
 		}
 
 		// scale down to 10k messages
-		for (int i = 2; i > 0; i--) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 20);
+		for (int i = 3; i > 1; i--) {
+			sendMessages(producer, MESSAGES_PER_MINUTE * i, 30);
 		}
 	}
 
