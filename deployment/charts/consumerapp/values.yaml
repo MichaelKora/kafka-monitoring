@@ -1,20 +1,29 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: avarange/pj-ds-consumerapp
+  repository: avarange/pj-ds-consumer
   pullPolicy:  Always
+
 autoscaling:
   enabled: true
   minReplicas: 1
   maxReplicas: 12
   targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-  scaleUpWindow: 0
-  scaleDownWindow: 300
+  scaleUp:
+    scaleUpWindow: 30
+  scaleDown:
+    scaleDownWindow: 30
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+
 resources:
   limits:
     cpu: "250m"
-    memory: "128Mi"
+    memory: "256Mi"
+
 arguments:
   - CPU
+
 topic: topic1

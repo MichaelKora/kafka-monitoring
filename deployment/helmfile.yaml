@@ -60,15 +60,6 @@ releases:
     needs:
       - strimzi/strimzi
 
-  - name: k8kafka-cp-schema-registry
-    chart: "confluentinc/cp-helm-charts"
-    version: "0.6.0"
-    namespace: kafka
-    values:
-      - "./manifests/schema-registry.yaml"
-    needs:
-      - kafka/strimzi-kafka
-
 #  - name: k8kafka-cp-kafka-rest
 #    chart: "confluentinc/cp-helm-charts"
 #    version: "0.6.0"
@@ -84,8 +75,6 @@ releases:
     version: 0.5.6
     values:
       - "./manifests/redpanda-console.yaml"
-    needs:
-      - kafka/k8kafka-cp-schema-registry
 
   - name: producerapp
     namespace: kafka

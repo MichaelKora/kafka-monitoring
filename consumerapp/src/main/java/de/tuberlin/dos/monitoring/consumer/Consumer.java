@@ -116,7 +116,7 @@ public class Consumer {
 	}
 
 	private static void cpuIntenseStrategy(ConsumerRecord<String, String> record) {
-		int[] ints = new int[100_000];
+		int[] ints = new int[50_000];
 		for (int i = 0; i < ints.length; i++) {
 			ints[i] = ThreadLocalRandom.current().nextInt(0, 1_000_000);
 		}

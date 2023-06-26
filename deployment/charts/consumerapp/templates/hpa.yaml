@@ -14,9 +14,13 @@ spec:
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUpWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
+      policies:
+        {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 8 }}
     scaleDown:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDownWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
+      policies:
+        {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 8 }}
   metrics:
     {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource

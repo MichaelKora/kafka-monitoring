@@ -4,7 +4,7 @@ cp-kafka:
   enabled: false
 
 cp-schema-registry:
-  enabled: true
+  enabled: false
   imageTag: 7.3.2
   nameOverride: "k8kafka-cp-schema-registry"
   overrideGroupId: "k8kafka"
