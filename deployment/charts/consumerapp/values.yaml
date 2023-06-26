@@ -1,7 +1,7 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: avarange/pj-ds-consumer
+#  repository: avarange/pj-ds-consumer
   pullPolicy:  Always
 
 autoscaling:
@@ -11,6 +11,10 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   scaleUp:
     scaleUpWindow: 30
+    policies:
+      - type: Percent
+        value: 80
+        periodSeconds: 15
   scaleDown:
     scaleDownWindow: 30
     policies:

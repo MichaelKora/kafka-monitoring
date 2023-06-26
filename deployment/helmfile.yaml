@@ -7,8 +7,6 @@ repositories:
     url: https://confluentinc.github.io/cp-helm-charts/
   - name: redpanda
     url: https://charts.redpanda.com/
-#  - name: kedacore
-#    url: https://kedacore.github.io/charts
 
 helmDefaults:
   wait: true
@@ -33,15 +31,6 @@ releases:
     needs:
       - default/namespaces
 
-#  - name: keda
-#    namespace: keda
-#    chart: kedacore/keda
-#    values:
-#      - "./manifests/keda.yaml"
-#    needs:
-#      # Because of Pod/ServiceMonitors
-#      - monitoring/kube-prometheus-stack
-
   - name: strimzi
     namespace: strimzi
     chart: strimzi/strimzi-kafka-operator
@@ -54,20 +43,10 @@ releases:
 
   - name: strimzi-kafka
     namespace: kafka
-    # Must be set to properly install CRDs
     disableValidationOnInstall: true
     chart: "./charts/kafka-cluster"
     needs:
       - strimzi/strimzi
-
-#  - name: k8kafka-cp-kafka-rest
-#    chart: "confluentinc/cp-helm-charts"
-#    version: "0.6.0"
-#    namespace: kafka
-#    values:
-#      - "./manifests/kafka-rest.yaml"
-#    needs:
-#      - kafka/strimzi-kafka
 
   - name: redpanda-console
     namespace: kafka
@@ -81,9 +60,15 @@ releases:
     chart: "./charts/producerapp"
     needs:
       - kafka/strimzi-kafka
+    values:
+      - image:
+          repository: k3d-monitoring-registry.localhost:12345/producerapp
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
       - kafka/strimzi-kafka
+    values:
+      - image:
+          repository: k3d-monitoring-registry.localhost:12345/consumerapp
