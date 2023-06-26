@@ -10,8 +10,11 @@ wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/v5.4.6/install.sh | ba
 brew install k3d # for Mac
 choco install k3d # for Windows
 
+# create k3d docker registry
+k3d registry create monitoring-registry.localhost --port 12345
+
 # Create cluster
-k3d cluster create monitoring --image rancher/k3s
+k3d cluster create monitoring --registry-use k3d-monitoring-registry.localhost:12345 --image rancher/k3s
 
 # in case you want to stop/delete the cluster
 k3d cluster stop monitoring
@@ -37,7 +40,6 @@ choco install k9s # for Windows
 
 # Deployment of whole stack
 
-
 ##### Kafka, Strimzi-Operator, Prometheus, Prometheus JMX Exporter, Grafana, Redpanda console
 ```shell
 # install whole stack via helmfile (from within `deployment` dir)
@@ -55,20 +57,20 @@ To modify deployments check `deployment/charts/producerapp` or `deployment/chart
 
 ### Update the version tag each time you make a change!
 If you updated the applications in any way, and you want the cluster to use the updated version,
-be aware, that you need to update the version tag each time you update one of the applications. 
-Otherwise, Kubernetes will not pull the new version from the registry. 
+be aware, that you need to update the version tag each time you update one of the applications.
+Otherwise, Kubernetes will not pull the new version from the registry.
 
 To do so, update the `appversion` in the [producer app chart](deployment/charts/producerapp/Chart.yaml) or
 [consumer app chart](deployment/charts/consumerapp/Chart.yaml).
-Then, copy the version tag (without the quotation marks), expose the version as variable in your terminal 
+Then, copy the version tag (without the quotation marks), expose the version as variable in your terminal
 and tag the new image with the updated version while building and pushing like in the examples below.
 
 ### producerapp
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
 VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t avarange/pj-ds-producer:$VERSION -f ./producerapp/Dockerfile ./producerapp 
-docker push avarange/pj-ds-producer:$VERSION
+docker build -t localhost:12345/producerapp:$VERSION -f ./producerapp/Dockerfile ./producerapp 
+docker push localhost:12345/producerapp:$VERSION
 # apply new version to cluster
 cd deployment
 helmfile apply 
@@ -78,12 +80,12 @@ helmfile apply
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
 VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t avarange/pj-ds-consumer:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
-docker push avarange/pj-ds-consumer:$VERSION
+docker build -t localhost:12345/consumerapp:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
+docker push localhost:12345/consumerapp:$VERSION
 # apply new version to cluster
 cd deployment
-helmfile apply
-```
+helmfile apply 
+ ```
 
 # Grafana
 

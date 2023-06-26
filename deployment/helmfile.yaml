@@ -60,15 +60,9 @@ releases:
     chart: "./charts/producerapp"
     needs:
       - kafka/strimzi-kafka
-    values:
-      - image:
-          repository: k3d-monitoring-registry.localhost:12345/producerapp
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
       - kafka/strimzi-kafka
-    values:
-      - image:
-          repository: k3d-monitoring-registry.localhost:12345/consumerapp

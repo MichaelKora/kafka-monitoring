@@ -3,5 +3,6 @@ name: producerapp
 replicaCount: 0
 image:
 #  repository: avarange/pj-ds-producer
+  repository:  k3d-monitoring-registry.localhost:12345/producerapp
   pullPolicy:  Always
 topic: topic1

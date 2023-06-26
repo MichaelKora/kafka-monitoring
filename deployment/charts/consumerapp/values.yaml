@@ -2,7 +2,13 @@ name: consumerapp
 replicaCount: 1
 image:
 #  repository: avarange/pj-ds-consumer
+  repository:  k3d-monitoring-registry.localhost:12345/consumerapp
   pullPolicy:  Always
+port: 8080
+labels:
+
+service:
+  port: 80
 
 autoscaling:
   enabled: true
@@ -13,10 +19,10 @@ autoscaling:
     scaleUpWindow: 30
     policies:
       - type: Percent
-        value: 80
+        value: 100
         periodSeconds: 15
   scaleDown:
-    scaleDownWindow: 30
+    scaleDownWindow: 60
     policies:
       - type: Percent
         value: 100
