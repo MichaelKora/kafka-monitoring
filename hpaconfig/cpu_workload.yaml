@@ -1,27 +1,99 @@
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 12
-  targetCPUUtilizationPercentage: 80
-  scaleUpWindow: 0
-  scaleDownWindow: 300
 # way to many pods (12 permanently), average of 50% CPU load
+cpu_1:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 12
+    targetCPUUtilizationPercentage: 80
+    scaleUpWindow: 0
+    scaleDownWindow: 300
 
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 12
-  targetCPUUtilizationPercentage: 85
-  scaleUpWindow: 60
-  scaleDownWindow: 120
 # max of 7 pods, but lag did increase endlessly at 30k messages and HPA did not scale up
 # CPU load was good at an average of 80-85%
 # Scale down in the end did not take place fast enough
+cpu_2:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 12
+    targetCPUUtilizationPercentage: 85
+    scaleUpWindow: 60
+    scaleDownWindow: 120
+
+# average util was at roundabout 70%
+#
+# scale down seems too fast -> with a lot of instances, when re-balancing takes place, the consumerapps have a very low
+# utilization for a short period of time -> overall utilization is below threshold, scale down starts, lag increases
+# very fast -> wenn re-balancing is finished, nodes have way too much load, so new instances are created and re-balancing
+# happens again
+#
+# but also, scale down is too slow after a strong workload spike - it does not scale down at all and average utilization
+# goes below 50%
+#
+cpu_3:
+  autoscaling:
+    enabled: true
+    minReplicas: 0
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 80
+    scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+    scaleDown:
+      scaleDownWindow: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+
+cpu_4:
+  autoscaling:
+    enabled: true
+    minReplicas: 0
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 80
+    scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+    scaleDown:
+      scaleDownWindow: 120
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 15
 
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 12
+  minReplicas: 0
+  maxReplicas: 24
   targetCPUUtilizationPercentage: 80
-  scaleUpWindow: 60
-  scaleDownWindow: 60
+  scaleUp:
+    scaleUpWindow: 30
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 8
+        periodSeconds: 15
+  scaleDown:
+    scaleDownWindow: 120
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 4
+        periodSeconds: 15
