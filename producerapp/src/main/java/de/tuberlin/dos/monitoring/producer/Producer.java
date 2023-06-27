@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 
 public class Producer {
 
-	private static final String BOOTSTRAP_SERVERS ="localhost:9092";   //"cluster-kafka-bootstrap.kafka:9092";
+	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092"; // "localhost:9092";
 	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
 	private static int seed = 0;
 	private static int messagesMinute = 10000;
-	private static int patternWindow = 300; // in seconds
+	private static int patternWindow = 30; // in seconds(?)
 
 	public static void main(String[] args) {
 
@@ -59,25 +59,42 @@ public class Producer {
 		 */
 		if (args.length != 3) {
 			throw new RuntimeException(
-					"You have to pick a workload pattern, a random seed & messages per Minute: Choose 'STATIC'/'PATTERN'/'RANDOM', <Number>(default 0), <Number>(default 10000).");
-		}
-		try {
-			seed = Integer.parseInt(args[1]);
-		} catch (NumberFormatException e) {
-			throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+					"You have to pick a workload pattern, a random seed (When RANDOM) | pattern Window size (STATIC, PATTERN) & messages per Minute: Choose 'STATIC'/'PATTERN'/'RANDOM', <Number>(default 0(RANDOM) | 30 (STATIC, PATTERN)), <Number>(default 10000).");
 		}
 		try {
 			messagesMinute = Integer.parseInt(args[2]);
 		} catch (NumberFormatException e) {
 			throw new NumberFormatException("Sorry, the third argument couldn't be parsed as an Integer: " + e);
 		}
-		if (Objects.equals(args[0].toLowerCase(), "static"))
+		if (Objects.equals(args[0].toLowerCase(), "static")) {
+			setArgument(false, args[1]);
 			return Producer::staticStrategy;
-		if (Objects.equals(args[0].toLowerCase(), "pattern"))
+		}
+		if (Objects.equals(args[0].toLowerCase(), "pattern")) {
+			setArgument(false, args[1]);
 			return Producer::patternStrategy;
-		if (Objects.equals(args[0].toLowerCase(), "random"))
+		}
+		if (Objects.equals(args[0].toLowerCase(), "random")) {
+			setArgument(true, args[1]);
 			return Producer::randomStrategy;
+		}
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
+	}
+
+	private static void setArgument(boolean randomPattern, String arg1) {
+		if (randomPattern) {
+			try {
+				seed = Integer.parseInt(arg1);
+			} catch (NumberFormatException e) {
+				throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+			}
+		} else {
+			try {
+				patternWindow = Integer.parseInt(arg1);
+			} catch (NumberFormatException e) {
+				throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+			}
+		}
 	}
 
 	private static void runMessageLoop(KafkaProducer<String, String> producer, WorkloadStrategy workloadStrategy) {
@@ -132,12 +149,12 @@ public class Producer {
 
 		// scale up to 30k messages
 		for (int i = 1; i <= 4; i++) {
-			sendMessages(producer, messagesMinute * i, 30);
+			sendMessages(producer, messagesMinute * i, patternWindow);
 		}
 
 		// scale down to 10k messages
 		for (int i = 3; i > 1; i--) {
-			sendMessages(producer, messagesMinute * i, 30);
+			sendMessages(producer, messagesMinute * i, patternWindow);
 		}
 	}
 
@@ -160,22 +177,22 @@ public class Producer {
 		random.setSeed(seed);
 		int scaleOneFactor, scaleTwoFactor, window;
 
-		for(int cycle = 0; cycle < 4; cycle++){
-			
+		for (int cycle = 0; cycle < 4; cycle++) {
+
 			scaleOneFactor = random.nextInt(5);
 			scaleTwoFactor = random.nextInt(5);
 			window = random.nextInt(random.nextInt(40));
-			
+
 			// scale up to random #messages
 			for (int i = 1; i <= scaleOneFactor; i++) {
 				sendMessages(producer, messagesMinute * i, window);
 			}
 
-			//scale down to random #messages
+			// scale down to random #messages
 			for (int i = 5; i > scaleTwoFactor; i--) {
 				sendMessages(producer, messagesMinute * i, window);
 			}
-	  }
+		}
 	}
 
 	private static void sendMessages(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
