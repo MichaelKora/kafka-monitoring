@@ -18,8 +18,9 @@ Then, port-forward prometheus-kube-prometheus-stack-prometheus and kube-promethe
 
 ### After cluster or VMs have been killed, you need to create the test topic again
 ```bash
-bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 16 --replication-factor 1
+bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 24 --replication-factor 1
 ```
+If you increase or lower the max number of replicas, remember to update the partitions.
 
 ### To have a look into the grafana dashboard or prometheus, you have to create a ssh-tunnel to the vm
 ```bash
