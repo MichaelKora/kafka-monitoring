@@ -10,29 +10,30 @@ labels:
 service:
   port: 80
 
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 24
-  targetCPUUtilizationPercentage: 85
-  scaleUp:
-    scaleUpWindow: 60
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 30
-      - type: Pods
-        value: 4
-        periodSeconds: 30
-  scaleDown:
-    scaleDownWindow: 45
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 120
-      - type: Pods
-        value: 2
-        periodSeconds: 45
+cpu_9:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 70
+    scaleUp:
+      scaleUpWindow: 60
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+    scaleDown:
+      scaleDownWindow: 45
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 45
 
 resources:
   limits:
