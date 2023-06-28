@@ -1,4 +1,6 @@
 repositories:
+  - name: metrics-server
+    url: https://kubernetes-sigs.github.io/metrics-server/
   - name: strimzi
     url: https://strimzi.io/charts/
   - name: prometheus-community
@@ -20,6 +22,12 @@ releases:
     chart: "./charts/namespace"
     values:
       - "./manifests/namespaces.yaml"
+
+  - name: metrics-server
+    namespace: kube-system
+    chart: metrics-server/metrics-server
+    needs:
+      - default/namespaces
 
   - name: kube-prometheus-stack
     namespace: monitoring
