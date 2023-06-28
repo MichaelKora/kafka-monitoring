@@ -186,8 +186,7 @@ cpu_7:
           periodSeconds: 45
 
 # The problem is: if some pods are below the limit, some are constantly at 100, the scale up does not happen properly
-# the main problem could is that messages are not distributed equally across partitions,
-# which is a close-to-reality scenario
+# one problem could is that messages are not distributed equally across partitions, which is a close-to-reality scenario
 # lag can build up and even though no scale up happens, because some apps get tons of messages, others don't
 cpu_8:
   autoscaling:
