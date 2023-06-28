@@ -190,7 +190,7 @@ cpu_8:
     enabled: true
     minReplicas: 1
     maxReplicas: 24
-    targetCPUUtilizationPercentage: 85
+    targetCPUUtilizationPercentage: 80
     scaleUp:
       scaleUpWindow: 60
       policies:
