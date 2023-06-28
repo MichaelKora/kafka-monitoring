@@ -1,3 +1,22 @@
+# defaults
+behavior:
+  scaleDown:
+    stabilizationWindowSeconds: 300
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+  scaleUp:
+    stabilizationWindowSeconds: 0
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 4
+        periodSeconds: 15
+    selectPolicy: Max
+
 # way to many pods (12 permanently), average of 50% CPU load
 cpu_1:
   autoscaling:
@@ -84,6 +103,16 @@ cpu_4:
           value: 2
           periodSeconds: 15
 
+# no lag building up
+# amount of consumers is way higher, no scale-downs in increasing message phase
+# message latency lower, not so many spikes
+# cpu util lower, only because of max limit of 24 replicas is hit at 40k messages, the load is roundabout 70%
+# 5 Minutes after message rate lowered, still now scaledown observable
+# -> because of "spiking" workload which creates a very-short term high utilization and the behaviour of the HPA to take
+#    the highest values, scale down does not happen properly
+# -> even when the average workload is below 40%, it does not scale down!
+# -> back at 20-10k messages, it finally scales down
+#
 cpu_5:
   autoscaling:
     enabled: true
@@ -108,3 +137,28 @@ cpu_5:
         - type: Pods
           value: 2
           periodSeconds: 30
+
+cpu_6:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 90
+    scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+    scaleDown:
+      scaleDownWindow: 45
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 45
