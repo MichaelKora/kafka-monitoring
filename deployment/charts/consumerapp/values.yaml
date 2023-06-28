@@ -16,7 +16,7 @@ autoscaling:
   maxReplicas: 24
   targetCPUUtilizationPercentage: 85
   scaleUp:
-    scaleUpWindow: 15
+    scaleUpWindow: 60
     policies:
       - type: Percent
         value: 100
