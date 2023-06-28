@@ -124,10 +124,21 @@ public class Producer {
 	}
 
 	private static void sendMessages(KafkaProducer<String, String> producer, int amount) {
+		int partitionIndex = 0;
 		for (int k = 0; k < amount; k++) {
+
+			String key = randomString();
 			String value = randomString();
-			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, value);
+			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, partitionIndex, key, value);
 			producer.send(producerRecord);
+
+			// we have to set the indices manually to ensure all messages are distributed equally
+			if (partitionIndex < 24) {
+				partitionIndex++;
+			} else {
+				partitionIndex = 0;
+			}
+
 		}
 		producer.flush();
 		log.info("Sent %s messages to topic %s.".formatted(amount, TOPIC));
