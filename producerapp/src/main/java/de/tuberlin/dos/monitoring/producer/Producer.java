@@ -58,8 +58,8 @@ public class Producer {
 
 		Properties properties = new Properties();
 		// batch size 64KB and +20ms higher linger for higher troughput
-		properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(64*1024));
-		properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+		properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(8*1024));
+		properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "10");
 		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
