@@ -33,7 +33,7 @@ cpu_2:
 cpu_3:
   autoscaling:
     enabled: true
-    minReplicas: 0
+    minReplicas: 1
     maxReplicas: 24
     targetCPUUtilizationPercentage: 80
     scaleUp:
@@ -49,10 +49,20 @@ cpu_3:
           value: 100
           periodSeconds: 15
 
+# on startup, there is still some major lag building up
+#
+# scaledown seems a bit too volatile, but hard to estimate - lag is at least under control, replicas are
+# at an all-time minimum
+#
+# average level of replicas was at ann all-time minimum, scale down happened very fast, lag was under control for most
+# time
+#
+# average CPU utilization was higher, at roundabout 70%, as well as average message latency
+#
 cpu_4:
   autoscaling:
     enabled: true
-    minReplicas: 0
+    minReplicas: 1
     maxReplicas: 24
     targetCPUUtilizationPercentage: 80
     scaleUp:
@@ -65,7 +75,7 @@ cpu_4:
           value: 4
           periodSeconds: 15
     scaleDown:
-      scaleDownWindow: 120
+      scaleDownWindow: 30
       policies:
         - type: Percent
           value: 100
@@ -74,26 +84,27 @@ cpu_4:
           value: 2
           periodSeconds: 15
 
-autoscaling:
-  enabled: true
-  minReplicas: 0
-  maxReplicas: 24
-  targetCPUUtilizationPercentage: 80
-  scaleUp:
-    scaleUpWindow: 30
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 8
-        periodSeconds: 15
-  scaleDown:
-    scaleDownWindow: 120
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 4
-        periodSeconds: 15
+cpu_5:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 80
+    scaleUp:
+      scaleUpWindow: 15
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+    scaleDown:
+      scaleDownWindow: 90
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 30
