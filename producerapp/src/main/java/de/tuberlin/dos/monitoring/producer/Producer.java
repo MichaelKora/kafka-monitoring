@@ -24,7 +24,7 @@ public class Producer {
 	public static void main(String[] args) {
 
 		WorkloadStrategy workloadStrategy = Producer::stairStrategy;
-		MessageStrategy messageStrategy = Producer::sendMessagesSpiky;
+		MessageStrategy messageStrategy = Producer::sendMessagesConstant;
 
 		KafkaProducer<String, String> producer = createProducer();
 		createShutdownHook(producer);
@@ -106,9 +106,9 @@ public class Producer {
 	}
 
 	private static void sendMessagesConstant(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
-		int messagesPerSendCall = messagesPerMinute / 30;
+		int messagesPerSendCall = messagesPerMinute / 45;
 		for (int j = 0; j < count; j++) {
-			for (int i = 0; i < 30; i++) {
+			for (int i = 0; i < 45; i++) {
 				sendMessages(producer, messagesPerSendCall);
 				sleepSeconds(1);
 			}
@@ -124,8 +124,9 @@ public class Producer {
 
 	private static void sendMessages(KafkaProducer<String, String> producer, int amount) {
 		for (int k = 0; k < amount; k++) {
+			String key = randomString();
 			String value = randomString();
-			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, value);
+			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
 			producer.send(producerRecord);
 		}
 		producer.flush();
