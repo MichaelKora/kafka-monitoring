@@ -16,7 +16,7 @@ autoscaling:
   maxReplicas: 24
   targetCPUUtilizationPercentage: 60
   scaleUp:
-    scaleUpWindow: 60
+    scaleUpWindow: 30
     policies:
       - type: Percent
         value: 100
@@ -25,7 +25,7 @@ autoscaling:
         value: 4
         periodSeconds: 30
   scaleDown:
-    scaleDownWindow: 45
+    scaleDownWindow: 30
     policies:
       - type: Percent
         value: 100
