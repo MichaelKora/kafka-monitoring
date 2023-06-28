@@ -139,6 +139,34 @@ cpu_6:
     maxReplicas: 24
     targetCPUUtilizationPercentage: 90
     scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 30
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+    scaleDown:
+      scaleDownWindow: 45
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 2
+          periodSeconds: 45
+
+# scale up seems to be too aggressive
+# scaling down is better than in cpu_5 and not as aggressive as in cpu_4.
+# no lag was building up at all
+cpu_7:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 85
+    scaleUp:
       scaleUpWindow: 15
       policies:
         - type: Percent
@@ -157,14 +185,14 @@ cpu_6:
           value: 2
           periodSeconds: 45
 
-cpu_7:
+cpu_8:
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 24
     targetCPUUtilizationPercentage: 85
     scaleUp:
-      scaleUpWindow: 15
+      scaleUpWindow: 60
       policies:
         - type: Percent
           value: 100
