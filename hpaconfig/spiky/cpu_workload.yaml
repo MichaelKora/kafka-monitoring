@@ -1,22 +1,3 @@
-# defaults
-behavior:
-  scaleDown:
-    stabilizationWindowSeconds: 300
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-  scaleUp:
-    stabilizationWindowSeconds: 0
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 15
-      - type: Pods
-        value: 4
-        periodSeconds: 15
-    selectPolicy: Max
-
 # way to many pods (12 permanently), average of 50% CPU load
 cpu_1:
   autoscaling:
