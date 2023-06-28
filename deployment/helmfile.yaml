@@ -29,7 +29,7 @@ releases:
     values:
       - args:
           - "--kubelet-insecure-tls"
-          - "--metric-resolution=10s"
+          - "--metric-resolution=30s"
     needs:
       - default/namespaces
 
