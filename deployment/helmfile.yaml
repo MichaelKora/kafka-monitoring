@@ -61,12 +61,10 @@ releases:
     namespace: kafka
     chart: "./charts/producerapp"
     needs:
-      - kafka/strimzi-kafka
-      - monitoring/kube-prometheus-stack
+      - redpanda-console
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
-      - kafka/strimzi-kafka
-      - monitoring/kube-prometheus-stack
+      - redpanda-console
