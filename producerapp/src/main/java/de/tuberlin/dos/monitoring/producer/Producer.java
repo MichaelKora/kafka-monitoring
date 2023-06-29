@@ -23,18 +23,23 @@ public class Producer {
 
 	public static void main(String[] args) {
 
-		WorkloadStrategy workloadStrategy = Producer::staticStrategy;
+		WorkloadStrategy workloadStrategy = Producer::stairStrategy;
+		MessageStrategy messageStrategy = Producer::sendMessagesConstant;
 
 		KafkaProducer<String, String> producer = createProducer();
 		createShutdownHook(producer);
-		runMessageLoop(producer, workloadStrategy);
+		runMessageLoop(producer, workloadStrategy, messageStrategy);
 	}
 
-	private static void runMessageLoop(KafkaProducer<String, String> producer, WorkloadStrategy workloadStrategy) {
+	private static void runMessageLoop(
+			KafkaProducer<String, String> producer,
+			WorkloadStrategy workloadStrategy,
+			MessageStrategy messageStrategy
+	) {
 
 		try (producer) {
 			while (true) {
-				workloadStrategy.apply(producer);
+				workloadStrategy.apply(producer, messageStrategy);
 			}
 		}
 		catch (WakeupException e) {
@@ -52,9 +57,8 @@ public class Producer {
 	private static KafkaProducer<String, String> createProducer() {
 
 		Properties properties = new Properties();
-		// batch size 64KB and +20ms higher linger for higher troughput
-		properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(64*1024));
-		properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
+		properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString( 1024));
+		properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "5");
 		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -78,41 +82,55 @@ public class Producer {
 
 	@FunctionalInterface
 	private interface WorkloadStrategy {
-		void apply(KafkaProducer<String, String> producer);
+		void apply(KafkaProducer<String, String> producer, MessageStrategy messageStrategy);
 	}
 
-	private static void staticStrategy(KafkaProducer<String, String> producer) {
+	private static void stairStrategy(KafkaProducer<String, String> producer, MessageStrategy messageStrategy) {
 
 		final int MESSAGES_PER_MINUTE = 10_000;
 
 		// scale up to 30k messages
 		for (int i = 1; i <= 4; i++) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 30);
+			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 15);
 		}
 
 		// scale down to 10k messages
 		for (int i = 3; i > 1; i--) {
-			sendMessages(producer, MESSAGES_PER_MINUTE * i, 30);
+			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 15);
 		}
 	}
 
-	private static void sendMessages(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
+	@FunctionalInterface
+	private interface MessageStrategy {
+		void apply(KafkaProducer<String, String> producer, int messagesPerMinute, int count);
+	}
 
+	private static void sendMessagesConstant(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
+		int messagesPerSendCall = messagesPerMinute / 45;
 		for (int j = 0; j < count; j++) {
-
-			for (int i = 0; i < messagesPerMinute; i++) {
-				String key = randomString();
-				String value = randomString();
-				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
-				producer.send(producerRecord);
+			for (int i = 0; i < 45; i++) {
+				sendMessages(producer, messagesPerSendCall);
+				sleepSeconds(1);
 			}
-
-			producer.flush();
-			log.info("Sent %s messages to topic %s.".formatted(messagesPerMinute, TOPIC));
-
-			sleep(1);
-
 		}
+	}
+
+	private static void sendMessagesSpiky(KafkaProducer<String, String> producer, int messagesPerMinute, int count) {
+		for (int j = 0; j < count; j++) {
+			sendMessages(producer, messagesPerMinute);
+			sleepMinutes(1);
+		}
+	}
+
+	private static void sendMessages(KafkaProducer<String, String> producer, int amount) {
+		for (int k = 0; k < amount; k++) {
+			String key = randomString();
+			String value = randomString();
+			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
+			producer.send(producerRecord);
+		}
+		producer.flush();
+		log.info("Sent %s messages to topic %s.".formatted(amount, TOPIC));
 	}
 
 	private static String randomString() {
@@ -121,9 +139,18 @@ public class Producer {
 		return new String(array, StandardCharsets.UTF_8);
 	}
 
-	private static void sleep(int minutes) {
+	private static void sleepMinutes(int minutes) {
 		try {
 			TimeUnit.MINUTES.sleep(minutes);
+		}
+		catch (InterruptedException e) {
+			throw new RuntimeException("Could not send the producer to bed...", e);
+		}
+	}
+
+	private static void sleepSeconds(int seconds) {
+		try {
+			TimeUnit.SECONDS.sleep(seconds);
 		}
 		catch (InterruptedException e) {
 			throw new RuntimeException("Could not send the producer to bed...", e);
