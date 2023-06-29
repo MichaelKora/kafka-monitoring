@@ -56,6 +56,7 @@ public class Producer {
 		 * Encryption of data
 		 * Pattern: #Messages at low rate, #Messages at high rate, ratio of low ~ high
 		 * rate, Time of one Cycle, #Cycles
+		 * App startUp time Consumerside 
 		 */
 		if (args.length != 3) {
 			throw new RuntimeException(
