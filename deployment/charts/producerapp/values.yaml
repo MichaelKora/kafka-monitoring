@@ -4,4 +4,9 @@ replicaCount: 1
 image:
   repository: avarange/pj-ds-producer
   pullPolicy:  Always
+
+arguments:
+  - Pattern
+  - 0
+  - 10000
 topic: topic1
