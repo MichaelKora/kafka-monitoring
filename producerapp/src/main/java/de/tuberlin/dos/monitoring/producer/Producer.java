@@ -26,6 +26,7 @@ public class Producer {
 
 	public static void main(String[] args) {
 
+		System.out.println("Running Producer App...");
 		WorkloadStrategy workloadStrategy = pickWorkloadStrategy(args);
 
 		KafkaProducer<String, String> producer = createProducer();
