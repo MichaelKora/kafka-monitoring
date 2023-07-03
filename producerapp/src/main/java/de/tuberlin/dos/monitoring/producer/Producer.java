@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 
 public class Producer {
 
-	private static final String BOOTSTRAP_SERVERS = "cluster-kafka-bootstrap.kafka:9092"; // "localhost:9092";
+	private static final String BOOTSTRAP_SERVERS ="cluster-kafka-bootstrap.kafka:9092"; // "localhost:9092";
 	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
 	private static int seed = 0;

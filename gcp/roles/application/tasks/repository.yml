@@ -3,7 +3,7 @@
   git:
     repo: 'https://github.com/MichaelKora/kafka-monitoring'
     dest: /root/kafka-monitoring
-    version: main
+    version: feature/workloads
     force: true
 
 - name: Creating Application Images
