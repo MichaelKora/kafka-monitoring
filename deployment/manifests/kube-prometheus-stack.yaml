@@ -23,10 +23,10 @@ prometheus:
             - strimzi
     serviceMonitorSelector:
       matchExpressions:
-        - { key: release, operator: In, values: [ kube-prometheus-stack, strimzi-kafka ] }
+        - { key: release, operator: In, values: [ consumerapp, kube-prometheus-stack, strimzi-kafka ] }
     podMonitorSelector:
       matchExpressions:
-        - { key: release, operator: In, values: [ kube-prometheus-stack, strimzi-kafka ] }
+        - { key: release, operator: In, values: [ consumerapp, kube-prometheus-stack, strimzi-kafka ] }
 kube-state-metrics:
   # Comma-separated list of additional Kubernetes label keys that will be used in the resource's
   # labels metric. By default the metric contains only name and namespace labels.

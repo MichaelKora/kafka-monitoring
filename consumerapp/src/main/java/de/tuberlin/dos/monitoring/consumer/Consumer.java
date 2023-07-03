@@ -6,8 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import io.micrometer.core.instrument.Timer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -24,6 +26,8 @@ public class Consumer {
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
 	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
+	private static final Timer latencyTimer = LatencyExporter.create()
+															 .getMsgLatencyTimer(UUID.randomUUID().toString());
 
 	public static void main(String[] args) {
 
@@ -52,9 +56,11 @@ public class Consumer {
 		if (args.length != 1) {
 			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU', 'MEM' or 'MIXED'.");
 		}
+
 		if (Objects.equals(args[0], "CPU")) return Consumer::cpuIntenseStrategy;
 		if (Objects.equals(args[0], "MEM")) return Consumer::memoryIntenseStrategy;
 		if (Objects.equals(args[0], "MIXED")) return Consumer::mixedStrategy;
+
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
 	}
 
@@ -73,12 +79,16 @@ public class Consumer {
 	private static void runPollingLoop(KafkaConsumer<String, String> consumer, WorkloadStrategy workloadStrategy) {
 		try (consumer) {
 			while (true) {
+
 				for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofMillis(100))) {
-					log.info("Got message: K<>: <%s> V<>: <%s> Partition: %s Offset: %s".formatted(
+
+					log.debug("Got message: K<>: <%s> V<>: <%s> Partition: %s Offset: %s".formatted(
 							record.key(), record.value(), record.partition(), record.offset())
 					);
-					workloadStrategy.apply(record);
+
+					latencyTimer.record(() -> workloadStrategy.apply(record));
 				}
+
 				consumer.commitSync();
 			}
 		}
@@ -104,7 +114,8 @@ public class Consumer {
 
 				try {
 					mainThread.join();
-				} catch (InterruptedException e) {
+				}
+				catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
@@ -130,7 +141,7 @@ public class Consumer {
 		}
 		String concatenated = "";
 		for (int i = 0; i < 10; i++) {
-			concatenated  += record.value();
+			concatenated += record.value();
 		}
 		messageDump.add(concatenated);
 	}

@@ -1,4 +1,6 @@
 repositories:
+  - name: metrics-server
+    url: https://kubernetes-sigs.github.io/metrics-server/
   - name: strimzi
     url: https://strimzi.io/charts/
   - name: prometheus-community
@@ -7,8 +9,6 @@ repositories:
     url: https://confluentinc.github.io/cp-helm-charts/
   - name: redpanda
     url: https://charts.redpanda.com/
-#  - name: kedacore
-#    url: https://kedacore.github.io/charts
 
 helmDefaults:
   wait: true
@@ -23,6 +23,16 @@ releases:
     values:
       - "./manifests/namespaces.yaml"
 
+  - name: metrics-server
+    namespace: kube-system
+    chart: metrics-server/metrics-server
+    values:
+      - args:
+          - "--kubelet-insecure-tls"
+          - "--metric-resolution=30s"
+    needs:
+      - default/namespaces
+
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: prometheus-community/kube-prometheus-stack
@@ -32,15 +42,6 @@ releases:
       - "./manifests/kube-prometheus-stack.yaml"
     needs:
       - default/namespaces
-
-#  - name: keda
-#    namespace: keda
-#    chart: kedacore/keda
-#    values:
-#      - "./manifests/keda.yaml"
-#    needs:
-#      # Because of Pod/ServiceMonitors
-#      - monitoring/kube-prometheus-stack
 
   - name: strimzi
     namespace: strimzi
@@ -54,20 +55,10 @@ releases:
 
   - name: strimzi-kafka
     namespace: kafka
-    # Must be set to properly install CRDs
     disableValidationOnInstall: true
     chart: "./charts/kafka-cluster"
     needs:
       - strimzi/strimzi
-
-#  - name: k8kafka-cp-kafka-rest
-#    chart: "confluentinc/cp-helm-charts"
-#    version: "0.6.0"
-#    namespace: kafka
-#    values:
-#      - "./manifests/kafka-rest.yaml"
-#    needs:
-#      - kafka/strimzi-kafka
 
   - name: redpanda-console
     namespace: kafka
@@ -75,15 +66,17 @@ releases:
     version: 0.5.6
     values:
       - "./manifests/redpanda-console.yaml"
+    needs:
+      - kafka/strimzi-kafka
 
   - name: producerapp
     namespace: kafka
     chart: "./charts/producerapp"
     needs:
-      - kafka/strimzi-kafka
+      - redpanda-console
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
-      - kafka/strimzi-kafka
+      - redpanda-console
