@@ -1,0 +1,12 @@
+Things left To-Do (Feel free to add or put your name behind a task if you are working on it):
+
+- Change SetUp so that applications run on the from us prior agreed Node (Consumer alone, Producer + Kafka on same)
+- Get 2nd cluster running
+- Look at consumer operation
+- Run different scenarios & fill in matrix accordingly
+- Extend workload matrix (/evaluation)
+- Adjust Dashboard (#messages sent at which time, Maybe Config values)
+
+
+
+
