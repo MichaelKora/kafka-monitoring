@@ -10,7 +10,7 @@ Things left To-Do (Feel free to add or put your name behind a task if you are wo
 
 Questions:
 - Is topic recreated with every new start of a scenario? Do we need to recreate the topic manually? 
-
+- How to read in file? Same amount of data points for each scnario but sent in differen pattern? Add both datasets to container so we can choose ? Add datasets to container? Send multiple times same file to Kafka?
 
 
 
