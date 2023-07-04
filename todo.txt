@@ -2,10 +2,14 @@ Things left To-Do (Feel free to add or put your name behind a task if you are wo
 
 - Change SetUp so that applications run on the from us prior agreed Node (Consumer alone, Producer + Kafka on same) [Jonathan]
 - Get 2nd cluster running [Benji]
-- Look at consumer operation [Benji]
+- Look at consumer operation, calculate Stuff based on example data value [Benji]
+- Let Producer use example data (Traffic/Electro) to upload to Kafka [Benji]
 - Run different scenarios & fill in matrix accordingly
 - Extend workload matrix (/evaluation)
 - Adjust Dashboard (#messages sent at which time, Maybe Config values)
+
+Questions:
+- Is topic recreated with every new start of a scenario? Do we need to recreate the topic manually? 
 
 
 
