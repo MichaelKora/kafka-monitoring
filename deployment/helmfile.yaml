@@ -29,7 +29,6 @@ releases:
     values:
       - args:
           - "--kubelet-insecure-tls"
-          - "--kubelet-preferred-address-types=InternalIP"
     needs:
       - default/namespaces
 
