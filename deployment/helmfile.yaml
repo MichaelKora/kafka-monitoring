@@ -46,8 +46,6 @@ releases:
   - name: keda
     namespace: keda
     chart: kedacore/keda
-    values:
-      - "./manifests/keda.yaml"
     needs:
       - monitoring/kube-prometheus-stack
 
