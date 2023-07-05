@@ -1,5 +1,5 @@
-watchNamespaces:
-  - "kafka"
+#watchNamespaces:
+#  - "kafka"
 
 resources:
   limits:
