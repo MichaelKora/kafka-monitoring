@@ -23,14 +23,14 @@ cpu_80_fast_up_fast_down:
           value: 2
           periodSeconds: 15
 
-cpu_85_very_fast_up_slow_down:
+cpu_85_fast_up_slow_down:
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 24
     targetCPUUtilizationPercentage: 85
     scaleUp:
-      scaleUpWindow: 15
+      scaleUpWindow: 30
       policies:
         - type: Percent
           value: 100
