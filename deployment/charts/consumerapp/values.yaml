@@ -11,28 +11,41 @@ service:
   port: 80
 
 autoscaling:
-  enabled: true
   minReplicas: 1
   maxReplicas: 24
-  targetCPUUtilizationPercentage: 75
-  scaleUp:
-    scaleUpWindow: 30
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 60
-      - type: Pods
-        value: 4
-        periodSeconds: 15
-  scaleDown:
-    scaleDownWindow: 120
-    policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 120
-      - type: Pods
-        value: 4
-        periodSeconds: 30
+  hpa:
+    enabled: false
+    targetCPUUtilizationPercentage: 75
+    scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+    scaleDown:
+      scaleDownWindow: 120
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 4
+          periodSeconds: 30
+  keda:
+    enabled: true
+    pollingInterval: 30
+    cooldownPeriod: 120
+    idleReplicaCount: 1
+    triggers:
+      - type: kafka
+        metadata:
+          bootstrapServers: cluster-kafka-bootstrap.kafka:9092
+          consumerGroup: group1
+          lagThreshold: 1000
+          offsetResetPolicy: latest
 
 resources:
   limits:

@@ -1,4 +1,4 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if .Values.autoscaling.hpa.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -14,23 +14,23 @@ spec:
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.hpa.scaleUp.scaleUpWindow }}
       policies:
-        {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 8 }}
+        {{- toYaml .Values.autoscaling.hpa.scaleUp.policies | nindent 8 }}
     scaleDown:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.hpa.scaleDown.scaleDownWindow }}
       policies:
-        {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 8 }}
+        {{- toYaml .Values.autoscaling.hpa.scaleDown.policies | nindent 8 }}
   metrics:
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.autoscaling.hpa.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.autoscaling.hpa.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.autoscaling.hpa.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory

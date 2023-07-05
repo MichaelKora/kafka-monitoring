@@ -9,6 +9,8 @@ repositories:
     url: https://confluentinc.github.io/cp-helm-charts/
   - name: redpanda
     url: https://charts.redpanda.com/
+  - name: kedacore
+    url: https://kedacore.github.io/charts
 
 helmDefaults:
   wait: true
@@ -35,12 +37,19 @@ releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: prometheus-community/kube-prometheus-stack
-    # Must be set to properly install CRDs
     disableValidationOnInstall: true
     values:
       - "./manifests/kube-prometheus-stack.yaml"
     needs:
       - default/namespaces
+
+  - name: keda
+    namespace: keda
+    chart: kedacore/keda
+    values:
+      - "./manifests/keda.yaml"
+    needs:
+      - monitoring/kube-prometheus-stack
 
   - name: strimzi
     namespace: strimzi
@@ -49,7 +58,6 @@ releases:
     values:
       - "./manifests/strimzi.yaml"
     needs:
-      # Because of Grafana Dashboard and Pod/ServiceMonitors
       - monitoring/kube-prometheus-stack
 
   - name: strimzi-kafka
