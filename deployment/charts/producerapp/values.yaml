@@ -1,6 +1,6 @@
 name: producerapp
 # just scale up in case you want to start producing messages
-replicaCount: 1
+replicaCount: 0 
 image:
   repository: avarange/pj-ds-producer
 #  repository:  k3d-monitoring-registry.localhost:12345/producerapp
@@ -8,6 +8,6 @@ image:
 
 arguments:
   - Pattern
-  - 7
+  - 10 
   - 10000
-topic: topic1
+topic: topic0
