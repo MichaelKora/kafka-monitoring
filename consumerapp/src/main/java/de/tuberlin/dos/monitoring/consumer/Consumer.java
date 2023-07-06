@@ -53,14 +53,11 @@ public class Consumer {
 		9. CPU/MEM intense ~random
 		*/
 		if (args.length != 1) {
-			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU' or 'MEM'.");
+			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU', 'MEM' or 'MIXED'.");
 		}
-		if (Objects.equals(args[0], "CPU")) {
-			return Consumer::cpuIntenseStrategy;
-		}
-		if (Objects.equals(args[0], "MEM")) {
-			return Consumer::memoryIntenseStrategy;
-		}
+		if (Objects.equals(args[0], "CPU")) return Consumer::cpuIntenseStrategy;
+		if (Objects.equals(args[0], "MEM")) return Consumer::memoryIntenseStrategy;
+		if (Objects.equals(args[0], "MIXED")) return Consumer::mixedStrategy;
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
 	}
 
@@ -142,6 +139,17 @@ public class Consumer {
 		String concatenated = "";
 		for (int i = 0; i < 10; i++) {
 			concatenated += record.value();
+		}
+		messageDump.add(concatenated);
+	}
+	
+	private static void mixedStrategy(ConsumerRecord<String, String> record) {
+		if (messageDump.size() == MESSAGE_DUMP_CAPACITY) {
+			messageDump.clear();
+		}
+		String concatenated = "";
+		for (int i = 0; i < 10; i++) {
+			concatenated  += record.value();
 		}
 		messageDump.add(concatenated);
 	}
