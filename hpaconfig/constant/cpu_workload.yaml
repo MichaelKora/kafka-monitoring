@@ -1,3 +1,4 @@
+# scaling ok, but very volatile - increased scale down window would make more sense because rebalancing is expensive
 cpu_80_fast_up_fast_down:
   autoscaling:
     enabled: true
@@ -23,14 +24,16 @@ cpu_80_fast_up_fast_down:
           value: 2
           periodSeconds: 15
 
-cpu_85_very_fast_up_slow_down:
+# 85% utilization is too high in for scaling kafka - if some pods have not enough messages for whatsoever reason, lag
+# can allways build up endlessly
+cpu_85_fast_up_slow_down:
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 24
     targetCPUUtilizationPercentage: 85
     scaleUp:
-      scaleUpWindow: 15
+      scaleUpWindow: 30
       policies:
         - type: Percent
           value: 100
@@ -48,27 +51,54 @@ cpu_85_very_fast_up_slow_down:
           value: 2
           periodSeconds: 30
 
-cpu_85_very_fast_up_mid_down:
+# same issues as before, 80% util is still too high if partitions are distributed badly
+cpu_80_fast_up_slower_down:
   autoscaling:
     enabled: true
     minReplicas: 1
     maxReplicas: 24
-    targetCPUUtilizationPercentage: 85
+    targetCPUUtilizationPercentage: 80
     scaleUp:
-      scaleUpWindow: 15
+      scaleUpWindow: 30
       policies:
         - type: Percent
           value: 100
           periodSeconds: 60
         - type: Pods
-          value: 2
+          value: 4
           periodSeconds: 15
     scaleDown:
-      scaleDownWindow: 60
+      scaleDownWindow: 120
       policies:
         - type: Percent
           value: 100
           periodSeconds: 120
         - type: Pods
-          value: 2
-          periodSeconds: 45
+          value: 4
+          periodSeconds: 30
+
+# better, still rebalancing problems
+cpu_70_fast_up_slower_down:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 24
+    targetCPUUtilizationPercentage: 75
+    scaleUp:
+      scaleUpWindow: 30
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 60
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+    scaleDown:
+      scaleDownWindow: 120
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 120
+        - type: Pods
+          value: 4
+          periodSeconds: 30
