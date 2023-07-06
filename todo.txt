@@ -1,0 +1,33 @@
+Things left To-Do (Feel free to add or put your name behind a task if you are working on it):
+
+<<<<<<< HEAD
+- Change SetUp so that applications run on the from us prior agreed Node (Consumer alone, Producer +    	Kafka on same)
+- 2. Cluster zum laufen bringen bzw. sichergehen das mit Ansible neuer Cluster erstellt werden kann. 
+- Ansible Helm Values 
+- Keda scaling nach Lag
+- Grafana Light Mode
+- Google Doc für Dokumentation der Konfigurationen der  Scenarien
+- Producer mergen
+- (Consumer mixed/Ram weglassen?)
+- TradeOff Latenz/Overprovisioning
+- Folien überarbeiten (Seitenzahlen, alte raus, Light mode, nicht zu überladen, Anfang zu Ende in Kontext bringen) 
+- Welche Szenarien noch Laufen?
+
+Questions:
+- Is topic recreated with every new start of a scenario? Do we need to recreate the topic manually? 
+=======
+- Change SetUp so that applications run on the from us prior agreed Node (Consumer alone, Producer + Kafka on same) [Jonathan]
+- Get 2nd cluster running [Benji]
+- Look at consumer operation, calculate Stuff based on example data value [Benji]
+- Let Producer use example data (Traffic/Electro) to upload to Kafka [Benji]
+- Run different scenarios & fill in matrix accordingly
+- Extend workload matrix (/evaluation)
+- Adjust Dashboard (#messages sent at which time, Maybe Config values)
+
+Questions:
+- Is topic recreated with every new start of a scenario? Do we need to recreate the topic manually? 
+- How to read in file? Same amount of data points for each scnario but sent in differen pattern? Add both datasets to container so we can choose ? Add datasets to container? Send multiple times same file to Kafka?
+
+>>>>>>> a8bcd8f8039a805775b354918356e7a11e0b8a7b
+
+
