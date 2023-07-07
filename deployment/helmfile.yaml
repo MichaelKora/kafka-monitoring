@@ -5,8 +5,6 @@ releases:
   - name: producerapp
     namespace: kafka
     chart: "./charts/producerapp"
-    needs:
-      - kafka/redpanda-console
 
   - name: consumerapp
     namespace: kafka
