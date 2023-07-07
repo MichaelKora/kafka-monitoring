@@ -1,6 +1,12 @@
 helmfiles:
   - path: helmfile-stack.yaml
 
+helmDefaults:
+  wait: true
+  waitForJobs: true
+  createNamespace: false
+  timeout: 600
+
 releases:
   - name: producerapp
     namespace: kafka
