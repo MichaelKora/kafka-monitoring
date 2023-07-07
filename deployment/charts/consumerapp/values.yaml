@@ -14,7 +14,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   hpa:
-    enabled: true
+    enabled: false
     targetCPUUtilizationPercentage: 75
     scaleUp:
       scaleUpWindow: 30
@@ -35,7 +35,7 @@ autoscaling:
           value: 4
           periodSeconds: 30
   keda:
-    enabled: false
+    enabled: true
     pollingInterval: 30
     cooldownPeriod: 120
     triggers:
