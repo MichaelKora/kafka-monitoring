@@ -72,10 +72,10 @@ releases:
     namespace: kafka
     chart: "./charts/producerapp"
     needs:
-      - redpanda-console
+      - kafka/redpanda-console
 
   - name: consumerapp
     namespace: kafka
     chart: "./charts/consumerapp"
     needs:
-      - redpanda-console
+      - kafka/consumerapp
