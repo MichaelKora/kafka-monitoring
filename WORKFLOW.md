@@ -4,6 +4,10 @@ This workflow description assumes you've configured your `gcloud` cli like descr
 ```bash
 # don't forged to connect gcloud to the project
 gcloud config set project pj-distributed-systems-sose23
+# or
+gcloud config set project pj-ds-sose23-cluster3
+# or
+gcloud config set project setup-dspj-1
 ```
 
 ### Port-forward Grafana and Prometheus

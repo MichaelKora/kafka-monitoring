@@ -13,6 +13,7 @@ service:
 autoscaling:
   minReplicas: 1
   maxReplicas: 24
+  # TODO: transfer HPA ownership (https://keda.sh/docs/2.11/concepts/scaling-deployments/#transfer-ownership-of-an-existing-hpa)
   hpa:
     enabled: false
     targetCPUUtilizationPercentage: 75
@@ -37,13 +38,17 @@ autoscaling:
   keda:
     enabled: true
     pollingInterval: 30
-    cooldownPeriod: 120
+    cooldownPeriod: 90
     triggers:
+      - type: cpu
+        metricType: Utilization
+        metadata:
+          value: 80
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
-          lagThreshold: "1000"
+          lagThreshold: "40000"
           offsetResetPolicy: latest
 
 resources:
