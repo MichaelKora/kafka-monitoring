@@ -53,6 +53,7 @@
     ssh-icmp-ingress-rule
     --direction ingress
     --source-ranges 0.0.0.0/0
+    --network kubernetes-nodes
     --rules tcp:22,icmp
     --action allow
   register: result
@@ -90,6 +91,7 @@
     --zone=europe-west1-b
     --tags="{{ target_tags }}"
   loop: "{{ groups['virtual_machines'] }}"
+  failed_when: result.rc != 0 and "already exists" not in result.stderr
   changed_when: false
 
 - name: Resize backend disk to 100GB
