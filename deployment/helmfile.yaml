@@ -35,6 +35,7 @@ releases:
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: prometheus-community/kube-prometheus-stack
+    version: 47.2.1
     disableValidationOnInstall: true
     values:
       - "./manifests/kube-prometheus-stack.yaml"
