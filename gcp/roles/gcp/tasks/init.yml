@@ -52,7 +52,7 @@
     gcloud compute firewall-rules create
     ssh-icmp-ingress-rule
     --direction ingress
-    --target-tags "{{ target_tags }}"
+    --source-ranges 0.0.0.0/0
     --rules tcp:22,icmp
     --action allow
   register: result
