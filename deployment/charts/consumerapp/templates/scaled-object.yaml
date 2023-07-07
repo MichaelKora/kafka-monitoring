@@ -7,7 +7,7 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: {{ include "consumerapp.fullname" . }}
+  name: {{ include "consumerapp.fullname" . }}-scaled-object
   labels:
     {{- include "consumerapp.labels" . | nindent 4 }}
 spec:
