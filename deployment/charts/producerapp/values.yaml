@@ -3,7 +3,7 @@ name: producerapp
 replicaCount: 0
 image:
   repository: avarange/pj-ds-producer
-  pullPolicy:  Always
+  pullPolicy: Always
 
 arguments:
   - "Pattern"
