@@ -14,13 +14,13 @@ spec:
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   behavior:
     scaleUp:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.hpa.scaleUp.scaleUpWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
       policies:
-        {{- toYaml .Values.autoscaling.hpa.scaleUp.policies | nindent 8 }}
+        {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 8 }}
     scaleDown:
-      stabilizationWindowSeconds: {{ .Values.autoscaling.hpa.scaleDown.scaleDownWindow }}
+      stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
       policies:
-        {{- toYaml .Values.autoscaling.hpa.scaleDown.policies | nindent 8 }}
+        {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 8 }}
   metrics:
     {{- if .Values.autoscaling.hpa.targetCPUUtilizationPercentage }}
     - type: Resource

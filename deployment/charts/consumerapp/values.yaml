@@ -13,32 +13,32 @@ service:
 autoscaling:
   minReplicas: 1
   maxReplicas: 24
+  scaleUp:
+    scaleUpWindow: 30
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 60
+      - type: Pods
+        value: 4
+        periodSeconds: 15
+  scaleDown:
+    scaleDownWindow: 120
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 120
+      - type: Pods
+        value: 4
+        periodSeconds: 30
   # TODO: transfer HPA ownership (https://keda.sh/docs/2.11/concepts/scaling-deployments/#transfer-ownership-of-an-existing-hpa)
   hpa:
     enabled: false
-    targetCPUUtilizationPercentage: 75
-    scaleUp:
-      scaleUpWindow: 30
-      policies:
-        - type: Percent
-          value: 100
-          periodSeconds: 60
-        - type: Pods
-          value: 4
-          periodSeconds: 15
-    scaleDown:
-      scaleDownWindow: 120
-      policies:
-        - type: Percent
-          value: 100
-          periodSeconds: 120
-        - type: Pods
-          value: 4
-          periodSeconds: 30
+    targetCPUUtilizationPercentage: 80
   keda:
     enabled: true
     pollingInterval: 30
-    cooldownPeriod: 90
+    cooldownPeriod: 120
     triggers:
       - type: cpu
         metricType: Utilization

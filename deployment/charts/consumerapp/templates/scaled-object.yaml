@@ -22,4 +22,16 @@ spec:
   maxReplicaCount: {{ .Values.autoscaling.maxReplicas }}
   triggers:
   {{- .Values.autoscaling.keda.triggers | toYaml | nindent 4 }}
+  advanced:
+    horizontalPodAutoscalerConfig:
+      name: keda-hpa-{{ include "consumerapp.fullname" }}
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
+          policies:
+            {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 12 }}
+          scaleDown:
+            stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
+            policies:
+              {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 12 }}
 {{- end }}
