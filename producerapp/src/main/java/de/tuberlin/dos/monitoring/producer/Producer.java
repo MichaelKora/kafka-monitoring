@@ -91,12 +91,12 @@ public class Producer {
 
 		// scale up to 30k messages
 		for (int i = 1; i <= 4; i++) {
-			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 15);
+			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 30);
 		}
 
 		// scale down to 10k messages
 		for (int i = 3; i > 1; i--) {
-			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 15);
+			messageStrategy.apply(producer, MESSAGES_PER_MINUTE * i, 30);
 		}
 	}
 
