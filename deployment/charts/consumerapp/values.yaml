@@ -48,7 +48,7 @@ autoscaling:
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
-          lagThreshold: "10000"
+          lagThreshold: "1000"
           offsetResetPolicy: latest
 
 resources:
