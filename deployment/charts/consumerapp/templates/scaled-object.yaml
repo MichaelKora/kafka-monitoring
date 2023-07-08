@@ -24,7 +24,7 @@ spec:
   {{- .Values.autoscaling.keda.triggers | toYaml | nindent 4 }}
   advanced:
     horizontalPodAutoscalerConfig:
-      name: keda-hpa-{{ include "consumerapp.fullname" . }}
+      name: consumerapp-scaled-object
       behavior:
         scaleUp:
           stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
