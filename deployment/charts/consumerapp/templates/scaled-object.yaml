@@ -30,8 +30,8 @@ spec:
           stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
           policies:
             {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 12 }}
-          scaleDown:
-            stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
-            policies:
-              {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 12 }}
+        scaleDown:
+          stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
+          policies:
+            {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 12 }}
 {{- end }}
