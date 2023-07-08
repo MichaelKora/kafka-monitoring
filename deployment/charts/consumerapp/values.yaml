@@ -43,7 +43,7 @@ autoscaling:
       - type: cpu
         metricType: Utilization
         metadata:
-          value: "80"
+          value: "90"
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
