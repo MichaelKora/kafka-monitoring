@@ -23,7 +23,7 @@ autoscaling:
         value: 4
         periodSeconds: 30
   scaleDown:
-    scaleDownWindow: 120
+    scaleDownWindow: 180
     policies:
       - type: Percent
         value: 100
@@ -38,7 +38,7 @@ autoscaling:
   keda:
     enabled: true
     pollingInterval: 30
-    cooldownPeriod: 120
+    cooldownPeriod: 180
     triggers:
       - type: cpu
         metricType: Utilization
@@ -48,7 +48,7 @@ autoscaling:
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
-          lagThreshold: "40000"
+          lagThreshold: "10000"
           offsetResetPolicy: latest
 
 resources:
