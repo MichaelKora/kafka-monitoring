@@ -45,6 +45,7 @@ autoscaling:
         metadata:
           value: "70"
       - type: kafka
+        metricType: AverageValue
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
