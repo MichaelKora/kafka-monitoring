@@ -123,3 +123,5 @@ keda_cpu_80_1k_lag_long:
 
 keda_cpu_90_1k_lag_long:
 keda_cpu_70_1k_lag_long:
+keda_cpu_70_1k_lag_long_double_cpu:
+keda_cpu_80_1k_lag_long_double_cpu:
