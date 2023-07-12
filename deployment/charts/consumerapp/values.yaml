@@ -39,10 +39,10 @@ autoscaling:
     pollingInterval: 30
     cooldownPeriod: 180
     triggers:
-      - type: cpu
-        metricType: Utilization
-        metadata:
-          value: "90"
+#      - type: cpu
+#        metricType: Utilization
+#        metadata:
+#          value: "90"
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
