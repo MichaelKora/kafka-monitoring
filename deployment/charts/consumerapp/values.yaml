@@ -14,7 +14,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 30
+    scaleUpWindow: 60
     policies:
       - type: Percent
         value: 100
@@ -23,7 +23,7 @@ autoscaling:
         value: 4
         periodSeconds: 30
   scaleDown:
-    scaleDownWindow: 180
+    scaleDownWindow: 300
     policies:
       - type: Percent
         value: 100
@@ -36,8 +36,8 @@ autoscaling:
     targetCPUUtilizationPercentage: 80
   keda:
     enabled: true
-    pollingInterval: 30
-    cooldownPeriod: 180
+    pollingInterval: 60
+    cooldownPeriod: 300
     triggers:
 #      - type: cpu
 #        metricType: Utilization
