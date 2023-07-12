@@ -32,7 +32,7 @@ autoscaling:
         value: 4
         periodSeconds: 60
   hpa:
-    enabled: true
+    enabled: false
     targetCPUUtilizationPercentage: 80
   keda:
     enabled: true
