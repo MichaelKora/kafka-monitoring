@@ -10,6 +10,8 @@ metadata:
   name: {{ include "consumerapp.fullname" . }}-scaled-object
   labels:
     {{- include "consumerapp.labels" . | nindent 4 }}
+  annotations:
+    scaledobject.keda.sh/transfer-hpa-ownership: "true"
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -24,7 +26,7 @@ spec:
   {{- .Values.autoscaling.keda.triggers | toYaml | nindent 4 }}
   advanced:
     horizontalPodAutoscalerConfig:
-      name: consumerapp-scaled-object
+      name: consumerapp
       behavior:
         scaleUp:
           stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
