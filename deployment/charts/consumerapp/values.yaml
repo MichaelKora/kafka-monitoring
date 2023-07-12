@@ -35,7 +35,7 @@ autoscaling:
     enabled: true
     targetCPUUtilizationPercentage: 80
   keda:
-    enabled: false
+    enabled: true
     pollingInterval: 30
     cooldownPeriod: 180
     triggers:
