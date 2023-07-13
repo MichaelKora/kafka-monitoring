@@ -3,5 +3,12 @@ name: producerapp
 replicaCount: 0
 image:
   repository: avarange/pj-ds-producer
-  pullPolicy:  Always
+  pullPolicy: Always
+
+arguments:
+  - Static
+  - "30"
+  - "1500"
+  - "5"
+
 topic: topic1

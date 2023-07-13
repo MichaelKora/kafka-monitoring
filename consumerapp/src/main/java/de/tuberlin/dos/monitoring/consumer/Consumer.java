@@ -41,15 +41,24 @@ public class Consumer {
 	}
 
 	private static WorkloadStrategy pickWorkloadStrategy(String[] args) {
+		/*
+		Possible Scenarios:
+		1. CPU intense ~konstant
+		2. MEM intense ~konstant
+		3. CPU/MEM intense ~konstant
+		4. CPU intense ~pattern
+		5. MEM intense ~pattern
+		6. CPU/MEM intense ~pattern
+		7. CPU intense ~random
+		8. MEM intense ~random
+		9. CPU/MEM intense ~random
+		*/
 		if (args.length != 1) {
-			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU' or 'MEM'.");
+			throw new RuntimeException("You have to pick a workload strategy: Choose 'CPU', 'MEM' or 'MIXED'.");
 		}
-		if (Objects.equals(args[0], "CPU")) {
-			return Consumer::cpuIntenseStrategy;
-		}
-		if (Objects.equals(args[0], "MEM")) {
-			return Consumer::memoryIntenseStrategy;
-		}
+		if (Objects.equals(args[0], "CPU")) return Consumer::cpuIntenseStrategy;
+		if (Objects.equals(args[0], "MEM")) return Consumer::memoryIntenseStrategy;
+		if (Objects.equals(args[0], "MIXED")) return Consumer::mixedStrategy;
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
 	}
 
@@ -133,6 +142,10 @@ public class Consumer {
 			concatenated += record.value();
 		}
 		messageDump.add(concatenated);
+	}
+
+	private static void mixedStrategy(ConsumerRecord<String, String> record) {
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 }
