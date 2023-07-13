@@ -50,8 +50,7 @@ releases:
     namespace: keda
     chart: kedacore/keda
     values:
-      - args:
-          - "--zap-log-level=debug"
+      - "./manifests/keda.yaml"
     needs:
       - monitoring/kube-prometheus-stack
 
