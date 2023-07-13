@@ -14,24 +14,24 @@ autoscaling:
   enabled: true
   minReplicas: 1
   maxReplicas: 24
-  targetCPUUtilizationPercentage: 75
+  targetCPUUtilizationPercentage: 70
   scaleUp:
-    scaleUpWindow: 30
+    scaleUpWindow: 60
     policies:
       - type: Percent
         value: 100
-        periodSeconds: 60
+        periodSeconds: 30
       - type: Pods
         value: 4
-        periodSeconds: 15
+        periodSeconds: 30
   scaleDown:
-    scaleDownWindow: 120
+    scaleDownWindow: 30
     policies:
       - type: Percent
         value: 100
         periodSeconds: 120
       - type: Pods
-        value: 4
+        value: 2
         periodSeconds: 30
 
 resources:
