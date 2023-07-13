@@ -33,7 +33,7 @@ autoscaling:
     targetCPUUtilizationPercentage: 80
   keda:
     enabled: true
-    pollingInterval: 60
+    pollingInterval: 30
     cooldownPeriod: 300
     triggers:
 #      - type: cpu
