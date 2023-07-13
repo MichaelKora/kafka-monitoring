@@ -1,0 +1,2 @@
+- Low latency, no lag after 30min.
+- Too long too overprovisioned when there is no lag (scaling down not happening) 
