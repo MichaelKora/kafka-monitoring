@@ -141,7 +141,7 @@ public class Producer {
 
 			for (int i = 0; i < 2000; i++) {
 				sendMessages(producer, messagesMinute);
-				sleepSeconds(sleeptimeSeconds);
+				sleep(TimeUnit.SECONDS, sleeptimeSeconds);
 			}
 		}
 	
@@ -153,12 +153,12 @@ public class Producer {
 			for(int messagePackages = 0; messagePackages < patternWindow; messagePackages++){
 				// start with sending 1/2 of amount of messages per Minute for <patternWindow> times
 				sendMessages(producer, messagesMinute / 2);
-				sleepSeconds(sleeptimeSeconds);
+				sleep(TimeUnit.SECONDS, sleeptimeSeconds);
 			}
 			for(int messagePackages = 0; messagePackages < patternWindow; messagePackages++){
 				// continue with sending 2 times of the amount of messages per Minute for <patternWindow> times
 				sendMessages(producer, messagesMinute * 2);
-				sleepSeconds(sleeptimeSeconds);
+				sleep(TimeUnit.SECONDS, sleeptimeSeconds);
 			}
 		}
 	}
@@ -173,47 +173,47 @@ public class Producer {
 			int messagesAmount = random.nextInt(messagesMinute);
 			for (int cycle = 1; cycle <= patternWindow; cycle++) {
 				sendMessages(producer, messagesAmount);
-				sleepSeconds(sleeptimeSeconds);
+				sleep(TimeUnit.SECONDS, sleeptimeSeconds);
 	  		}
 		}
 	}
 
 	private static void stairStrategy(KafkaProducer<String, String> producer) {
 
-		// scale up to 30k messages
-		for (int stairstep = 1; stairstep <= 4; stairstep++) {
-			for(int steplength=0; steplength < patternWindow; steplength++){
-				sendMessages(producer, messagesMinute * stairstep);
-				sleepSeconds(sleeptimeSeconds);
-			}	
+		// scale up to 40k messages
+		for (int i = 1; i <= 4; i++) {
+			sendMessagesConstant(producer, messagesMinute * i, patternWindow);
 		}
 
 		// scale down to 10k messages
-		for (int stairstep = 3; stairstep > 1; stairstep--) {
-			for(int steplength=0; steplength < patternWindow; steplength++){
-				sendMessages(producer, messagesMinute * stairstep);
-				sleepSeconds(sleeptimeSeconds);
-			}	
+		for (int i = 3; i > 1; i--) {
+			sendMessagesConstant(producer, messagesMinute * i, patternWindow);
 		}
 	}
 
-
 	//-----------------Send Messages out-----------------------
-	private static void sendMessages(KafkaProducer<String, String> producer, int messagesPerMinute) {
+	private static void sendMessages(KafkaProducer<String, String> producer, int amount) {
 
-			int debugmessages = 0;
-			for (int i = 0; i < messagesPerMinute; i++) {
-				String key = randomString();
-				String value = randomString();
-				ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
-				producer.send(producerRecord);
-				debugmessages++;
-			}
-			producer.flush();
-
-			System.out.println("Messages sent: " + Integer.toString(debugmessages));
-			log.info("Sent %s messages to topic %s.".formatted(messagesPerMinute, TOPIC));
+		for (int k = 0; k < amount; k++) {
+			String key = randomString();
+			String value = randomString();
+			ProducerRecord<String, String> producerRecord = new ProducerRecord<>(TOPIC, key, value);
+			producer.send(producerRecord);
 		}
+
+		producer.flush();
+		log.info("Sent %s messages to topic %s.".formatted(amount, TOPIC));
+	}
+
+	private static void sendMessagesConstant(KafkaProducer<String, String> producer, int messagesPerMinute, int repeatTimes) {
+		int messagesPerSendCall = messagesPerMinute / 45;
+		for (int j = 0; j < repeatTimes; j++) {
+			for (int i = 0; i < 45; i++) {
+				sendMessages(producer, messagesPerSendCall);
+				sleep(TimeUnit.SECONDS, 1);
+			}
+		}
+	}
 	
 	//------------Random message------------------
 	private static String randomString() {
@@ -223,12 +223,13 @@ public class Producer {
 	}
 
 	//------------------_Sleep--------------------
-	private static void sleepSeconds(int seconds) {
+	private static void sleep(TimeUnit timeUnit, int val) {
 		try {
-			TimeUnit.SECONDS.sleep(seconds);
+			timeUnit.sleep(val);
 		}
 		catch (InterruptedException e) {
 			throw new RuntimeException("Could not send the producer to bed...", e);
 		}
 	}
+
 }
