@@ -26,7 +26,8 @@ public class Consumer {
 	private static final Logger log = LoggerFactory.getLogger(Consumer.class);
 	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
 	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
-	private static final Timer latencyTimer = LatencyExporter.create().getMsgLatencyTimer(UUID.randomUUID().toString());
+	private static final Timer latencyTimer = MetricsExporter.create()
+															 .getMsgLatencyTimer(UUID.randomUUID().toString());
 
 	public static void main(String[] args) {
 
@@ -142,16 +143,9 @@ public class Consumer {
 		}
 		messageDump.add(concatenated);
 	}
-	
+
 	private static void mixedStrategy(ConsumerRecord<String, String> record) {
-		if (messageDump.size() == MESSAGE_DUMP_CAPACITY) {
-			messageDump.clear();
-		}
-		String concatenated = "";
-		for (int i = 0; i < 10; i++) {
-			concatenated  += record.value();
-		}
-		messageDump.add(concatenated);
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 }

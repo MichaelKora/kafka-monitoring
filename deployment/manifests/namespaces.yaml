@@ -3,6 +3,3 @@ namespaces:
   - name: "strimzi"
   - name: "kafka"
   - name: "keda"
-  - name: "pipeline"
-
-

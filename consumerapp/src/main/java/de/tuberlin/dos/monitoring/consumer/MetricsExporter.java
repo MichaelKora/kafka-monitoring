@@ -12,17 +12,17 @@ import io.micrometer.prometheus.PrometheusMeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LatencyExporter {
+public class MetricsExporter {
 
-	private static final Logger log = LoggerFactory.getLogger(LatencyExporter.class);
+	private static final Logger log = LoggerFactory.getLogger(MetricsExporter.class);
 	private PrometheusMeterRegistry prometheusRegistry;
 
-	public static LatencyExporter create() {
-		LatencyExporter latencyExporter = new LatencyExporter();
-		latencyExporter.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-		latencyExporter.prometheusRegistry.config().commonTags("application", "consumerapp");
-		latencyExporter.wirePrometheus();
-		return latencyExporter;
+	public static MetricsExporter create() {
+		MetricsExporter metricsExporter = new MetricsExporter();
+		metricsExporter.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
+		metricsExporter.prometheusRegistry.config().commonTags("application", "consumerapp");
+		metricsExporter.wirePrometheus();
+		return metricsExporter;
 	}
 
 	public Timer getMsgLatencyTimer(String appId) {

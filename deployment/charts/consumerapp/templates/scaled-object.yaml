@@ -1,0 +1,39 @@
+{{- if .Values.autoscaling.keda.enabled }}
+{{- if .Values.autoscaling.hpa.enabled }}
+{{- fail "HPA and KEDA are mutually exclusive because KEDA creates its own HPA" }}
+{{- end }}
+{{- end }}
+{{- if .Values.autoscaling.keda.enabled }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "consumerapp.fullname" . }}-scaled-object
+  labels:
+    {{- include "consumerapp.labels" . | nindent 4 }}
+  annotations:
+    scaledobject.keda.sh/transfer-hpa-ownership: "true"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "consumerapp.fullname" . }}
+  pollingInterval:  {{ .Values.autoscaling.keda.pollingInterval }}
+  cooldownPeriod:   {{ .Values.autoscaling.keda.cooldownPeriod }}
+  idleReplicaCount: {{ .Values.autoscaling.keda.idleReplicaCount }}
+  minReplicaCount: {{ .Values.autoscaling.minReplicas }}
+  maxReplicaCount: {{ .Values.autoscaling.maxReplicas }}
+  triggers:
+  {{- .Values.autoscaling.keda.triggers | toYaml | nindent 4 }}
+  advanced:
+    horizontalPodAutoscalerConfig:
+      name: consumerapp
+      behavior:
+        scaleUp:
+          stabilizationWindowSeconds: {{ .Values.autoscaling.scaleUp.scaleUpWindow }}
+          policies:
+            {{- toYaml .Values.autoscaling.scaleUp.policies | nindent 12 }}
+        scaleDown:
+          stabilizationWindowSeconds: {{ .Values.autoscaling.scaleDown.scaleDownWindow }}
+          policies:
+            {{- toYaml .Values.autoscaling.scaleDown.policies | nindent 12 }}
+{{- end }}

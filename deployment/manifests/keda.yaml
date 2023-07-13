@@ -1,0 +1,3 @@
+logging:
+  operator:
+    level: "debug"
