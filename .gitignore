@@ -41,6 +41,7 @@ terraform.rc
 .DS_Store
 
 # JAVA
+*.jar
 **/target/
 **/dependency-reduced-pom.xml
 
@@ -49,4 +50,3 @@ gcp/id_rsa*
 
 .vault_pass
 **/.vault_pass
-

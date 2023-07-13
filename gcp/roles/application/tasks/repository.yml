@@ -3,7 +3,8 @@
   git:
     repo: 'https://github.com/MichaelKora/kafka-monitoring'
     dest: /root/kafka-monitoring
-    version: main
+    # TODO: change back to main
+    version: feature/add-keda
     force: true
 
 - name: Creating Application Images

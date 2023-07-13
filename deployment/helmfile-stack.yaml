@@ -1,3 +1,4 @@
+
 repositories:
   - name: metrics-server
     url: https://kubernetes-sigs.github.io/metrics-server/
@@ -5,6 +6,8 @@ repositories:
     url: https://strimzi.io/charts/
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: kedacore
+    url: https://kedacore.github.io/charts
   - name: confluentinc
     url: https://confluentinc.github.io/cp-helm-charts/
   - name: redpanda
@@ -26,22 +29,30 @@ releases:
   - name: metrics-server
     namespace: kube-system
     chart: metrics-server/metrics-server
+    version: 3.10.0
     values:
       - args:
           - "--kubelet-insecure-tls"
-          - "--metric-resolution=30s"
     needs:
       - default/namespaces
 
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: prometheus-community/kube-prometheus-stack
-    # Must be set to properly install CRDs
+    version: 47.2.1
     disableValidationOnInstall: true
     values:
       - "./manifests/kube-prometheus-stack.yaml"
     needs:
       - default/namespaces
+
+  - name: keda
+    namespace: keda
+    chart: kedacore/keda
+    values:
+      - "./manifests/keda.yaml"
+    needs:
+      - monitoring/kube-prometheus-stack
 
   - name: strimzi
     namespace: strimzi
@@ -50,7 +61,6 @@ releases:
     values:
       - "./manifests/strimzi.yaml"
     needs:
-      # Because of Grafana Dashboard and Pod/ServiceMonitors
       - monitoring/kube-prometheus-stack
 
   - name: strimzi-kafka
