@@ -36,14 +36,14 @@ autoscaling:
     pollingInterval: 30
     cooldownPeriod: 300
     triggers:
-#      - type: cpu
-#        metricType: Utilization
-#        metadata:
-#          value: "90"
+      - type: cpu
+        metricType: Utilization
+        metadata:
+          value: "80"
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
-          consumerGroup: group1+
+          consumerGroup: group1
           topic: topic1
           partitionLimitation: '1-24'
           lagThreshold: "1000"
