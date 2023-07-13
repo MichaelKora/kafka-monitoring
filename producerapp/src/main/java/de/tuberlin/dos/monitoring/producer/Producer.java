@@ -21,9 +21,9 @@ public class Producer {
 	private static final String BOOTSTRAP_SERVERS ="cluster-kafka-bootstrap.kafka:9092"; // "localhost:9092";   //
 	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
-	private static final int sleeptimeSeconds = 5;  //Change for debugging
+	private static int sleeptimeSeconds = 5;  //Change for debugging
 	private static int seed = 1;
-	private static int messagesMinute = 10000;
+	private static int messagesMinute = 5000;
 	private static int patternWindow = 10; // amount of times data is sent
 
 	//--------------Interfaces---------------------
@@ -61,17 +61,17 @@ public class Producer {
 
 		if (args.length != 3) {
 			throw new RuntimeException(
-					"You have to pick a workload pattern, a random seed & messages per Minute: Choose 'STATIC'/'PATTERN'/'RANDOM'/'STAIR', <Number>(default 1 (10)), <Number>(default 10000).");
-		}
-		try {
-			seed = Integer.parseInt(args[1]);
-		} catch (NumberFormatException e) {
-			throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+					"You have to pick: \n 1. A workload pattern (String) \n 2. A random seed/patttern Window (int) \n 3. Messages per Minute (int) \n 4. Sleeptime (int): \n Choose 'STATIC'/'PATTERN'/'RANDOM'/'STAIR', <Number>(default 1 (10)), <Number>(default 5000).<Number>(default 5)");
 		}
 		try {
 			messagesMinute = Integer.parseInt(args[2]);
 		} catch (NumberFormatException e) {
-			throw new NumberFormatException("Sorry, the third argument couldn't be parsed as an Integer: " + e);
+			throw new NumberFormatException("Sorry, the third argument (Message Amount) couldn't be parsed as an Integer: " + e);
+		}
+		try {
+			sleeptimeSeconds = Integer.parseInt(args[3]);
+		} catch (NumberFormatException e) {
+			throw new NumberFormatException("Sorry, the fourth (Sleep Time) argument couldn't be parsed as an Integer: " + e);
 		}
 		// Pick Strategy according to 1st cli arg
 		if (Objects.equals(args[0].toLowerCase(), "static")){
@@ -97,13 +97,13 @@ public class Producer {
 			try {
 				seed = Integer.parseInt(arg1);
 			} catch (NumberFormatException e) {
-				throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+				throw new NumberFormatException("Sorry, the second argument (Seed) couldn't be parsed as an Integer: " + e);
 			}
 		} else {
 			try {
 				patternWindow = Integer.parseInt(arg1);
 			} catch (NumberFormatException e) {
-				throw new NumberFormatException("Sorry, the second argument couldn't be parsed as an Integer: " + e);
+				throw new NumberFormatException("Sorry, the second argument (Pattern Window Size) couldn't be parsed as an Integer: " + e);
 			}
 		}
 	}
@@ -139,7 +139,7 @@ public class Producer {
 
 	private static void staticStrategy(KafkaProducer<String, String> producer) {
 
-			for (int i = 0; i < 45; i++) {
+			for (int i = 0; i < 2000; i++) {
 				sendMessages(producer, messagesMinute);
 				sleepSeconds(sleeptimeSeconds);
 			}
@@ -148,7 +148,7 @@ public class Producer {
 	private static void patternStrategy(KafkaProducer<String, String> producer) {
 
 		//Cycle: One cycle consists of two periods, one with lower amount of messages and one with higher amount of messages being sent
-		for (int cycle = 0; cycle < 4; cycle++) {
+		for (int cycle = 0; cycle < 40; cycle++) {
 			
 			for(int messagePackages = 0; messagePackages < patternWindow; messagePackages++){
 				// start with sending 1/2 of amount of messages per Minute for <patternWindow> times
@@ -168,7 +168,7 @@ public class Producer {
 		Random random = new Random();
 		random.setSeed(seed);
 
-		for(int i = 0; i < 45; i++){
+		for(int i = 0; i < 4000; i++){
 
 			int messagesAmount = random.nextInt(messagesMinute);
 			for (int cycle = 1; cycle <= patternWindow; cycle++) {
@@ -209,9 +209,9 @@ public class Producer {
 				producer.send(producerRecord);
 				debugmessages++;
 			}
-			System.out.println("Messages sent: " + Integer.toString(debugmessages));
-
 			producer.flush();
+
+			System.out.println("Messages sent: " + Integer.toString(debugmessages));
 			log.info("Sent %s messages to topic %s.".formatted(messagesPerMinute, TOPIC));
 		}
 	
