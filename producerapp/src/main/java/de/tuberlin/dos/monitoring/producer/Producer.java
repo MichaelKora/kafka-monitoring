@@ -59,7 +59,7 @@ public class Producer {
 	// -----------------Read in passed arguments-------------------
 	private static WorkloadStrategy pickWorkloadStrategy(String[] args) {
 
-		if (args.length != 3) {
+		if (args.length != 4) {
 			throw new RuntimeException(
 					"You have to pick: \n 1. A workload pattern (String) \n 2. A random seed/patttern Window (int) \n 3. Messages per Minute (int) \n 4. Sleeptime (int): \n Choose 'STATIC'/'PATTERN'/'RANDOM'/'STAIR', <Number>(default 1 (10)), <Number>(default 5000).<Number>(default 5)");
 		}
