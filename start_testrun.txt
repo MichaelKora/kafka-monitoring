@@ -1,0 +1,13 @@
+cd gcp
+
+ansible-playbook playbook.yml -t start
+
+ip_adress=$(gcloud compute instances describe controller-1 --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
+
+ssh root@${ip_adress}
+
+cd kafka-monitoring/development
+
+helmfile apply
+
+bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 24 --replication-factor 1 
