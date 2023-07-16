@@ -1,0 +1,3 @@
+# after this point, the batch size and linger were set to a minimum to ensure better partition distribution
+# but, it seems like it is still a problem, at high message rates, some consumers are allways at 100%, a lot of them
+# are not

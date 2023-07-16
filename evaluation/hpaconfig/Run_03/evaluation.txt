@@ -1,0 +1,11 @@
+
+# average util was at roundabout 70%
+#
+# scale down seems too fast -> with a lot of instances, when re-balancing takes place, the consumerapps have a very low
+# utilization for a short period of time -> overall utilization is below threshold, scale down starts, lag increases
+# very fast -> wenn re-balancing is finished, nodes have way too much load, so new instances are created and re-balancing
+# happens again
+#
+# but also, scale down is too slow after a strong workload spike - it does not scale down at all and average utilization
+# goes below 50%
+#
