@@ -14,13 +14,13 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 60
+    scaleUpWindow: 30
     policies:
       - type: Pods
         value: 2
         periodSeconds: 30
   scaleDown:
-    scaleDownWindow: 300
+    scaleDownWindow: 180
     policies:
       - type: Pods
         value: 2
@@ -36,7 +36,7 @@ autoscaling:
       - type: cpu
         metricType: Utilization
         metadata:
-          value: "90"
+          value: "80"
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
