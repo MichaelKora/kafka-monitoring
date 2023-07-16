@@ -14,13 +14,13 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 30
+    scaleUpWindow: 15
     policies:
       - type: Pods
-        value: 2
-        periodSeconds: 30
+        value: 8
+        periodSeconds: 15
   scaleDown:
-    scaleDownWindow: 180
+    scaleDownWindow: 300
     policies:
       - type: Pods
         value: 2
