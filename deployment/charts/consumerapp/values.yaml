@@ -14,20 +14,17 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 90
+    scaleUpWindow: 15
     policies:
       - type: Pods
-        value: 2
-        periodSeconds: 45
+        value: 8
+        periodSeconds: 15
   scaleDown:
     scaleDownWindow: 300
     policies:
-      - type: Percent
-        value: 100
-        periodSeconds: 120
       - type: Pods
-        value: 4
-        periodSeconds: 60
+        value: 2
+        periodSeconds: 30
   hpa:
     enabled: true
     targetCPUUtilizationPercentage: 80
@@ -45,7 +42,6 @@ autoscaling:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
           topic: topic1
-          partitionLimitation: '1-24'
           lagThreshold: "1000"
           offsetResetPolicy: latest
 
