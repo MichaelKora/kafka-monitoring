@@ -129,3 +129,6 @@ keda_cpu_90_1k_lag_long_double_cpu:
 
 keda_1k_lag_only:
 keda_1k_lag_only_long_windows:
+keda_lag_only_doubled_partitions:
+keda_cpu_90_lag_1k_doubled_partitions:
+keda_cpu_80_lag_1k_doubled_partitions:
