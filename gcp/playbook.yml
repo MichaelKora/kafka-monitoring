@@ -33,3 +33,10 @@
   tags:
     - never
     - setup
+
+- name: Test Experiments
+  hosts: kubernetes_controllers
+  roles:
+    - experiments
+  tags:
+    - experiments

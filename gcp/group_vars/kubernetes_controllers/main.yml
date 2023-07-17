@@ -1,0 +1,52 @@
+---
+# Consumer
+# Default values
+autoscaling_enabled: true
+autoscaling_min_replicas: 1
+autoscaling_max_replicas: 24
+autoscaling_target_cpu_util: 75
+autoscaling_scale_up_window: 90
+autoscaling_scale_up_policy:
+  # - type: percent
+  #   value: 100
+  #   period_seconds: 60
+  - type: Pods
+    value: 2
+    period_seconds: 45
+autoscaling_scale_down_window: 300
+autoscaling_scale_down_policy:
+  - type: percent
+    value: 100
+    period_seconds: 120
+  - type: Pods
+    value: 4
+    period_seconds: 60
+autoscaling_hpa:
+  enabled: true
+  target_cpu_util: 80
+autoscaling_keda:
+  enabled: false
+  polling_interval: 30
+  cooldown_period: 300
+  trigger_cpu_value: 80
+  trigger_kafka_lag_threshold: 1000
+
+
+# Producer
+# Choose: Static, Pattern, Random, Stair
+workload_pattern: Static
+pattern_window: 30
+messages_per_minute: 1500
+sleep_time: 5
+
+
+# Experiments
+experiments:
+  - name: Round 1
+    autoscaling_target_cpu_util: 60
+    autoscaling_scale_up_window: 15
+    # add more changing parameter
+  - name: Round 2
+    autoscaling_scale_up_window: 30
+  - name: Round 3
+    autoscaling_scale_up_window: 45
