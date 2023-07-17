@@ -1,0 +1,9 @@
+# no lag building up
+# amount of consumers is way higher, no scale-downs in increasing message phase
+# message latency lower, not so many spikes
+# cpu util lower, only because of max limit of 24 replicas is hit at 40k messages, the load is roundabout 70%
+# 5 Minutes after message rate lowered, still now scaledown observable
+# -> because of "spiking" workload which creates a very-short term high utilization and the behaviour of the HPA to take
+#    the highest values, scale down does not happen properly
+# -> even when the average workload is below 40%, it does not scale down!
+# -> back at 20-10k messages, it finally scales down

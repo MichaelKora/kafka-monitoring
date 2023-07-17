@@ -1,0 +1,3 @@
+Selbes Problem wie bei Static davor: Consumer pods werden nicht höher als 5 Pods gescaled, der 6. bleibt im "Pending" Status. 
+Da die Cores pro Pod auf 0.5 gestellt sind, blockiert die VM evt mehr Pods bereitzustellen? 
+

@@ -1,0 +1,12 @@
+# !!! LOOKS GOOD FIRST, TURNS OUT AS BAD SOLUTION
+# seems like the best configuration so far
+# little lag build up
+# lowest amount of instances, way lower than in cpu_5 run
+# -> maximum of 15! instances, compared to 24 in other runs
+# average utilization was between 80-85%
+# latency was totally fine, even better than in other runs
+# scale down was not too aggressive, rather kinda accurate
+#
+# 90% seems to high, at 40k messages it does not scale fast "enough", does not scale up at all and lag increases endlessly
+# -> scale up window may too big in combination with 90% target load
+#

@@ -1,0 +1,4 @@
+
+# scale up seems to be too aggressive
+# scaling down is better than in cpu_5 and not as aggressive as in cpu_4.
+# no lag was building up at all

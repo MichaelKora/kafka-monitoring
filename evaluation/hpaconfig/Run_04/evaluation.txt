@@ -1,0 +1,11 @@
+
+# on startup, there is still some major lag building up
+#
+# scaledown seems a bit too volatile, but hard to estimate - lag is at least under control, replicas are
+# at an all-time minimum
+#
+# average level of replicas was at ann all-time minimum, scale down happened very fast, lag was under control for most
+# time
+#
+# average CPU utilization was higher, at roundabout 70%, as well as average message latency
+#
