@@ -6,6 +6,10 @@ prometheus:
   operator:
     serviceMonitor:
       enabled: true
+      additionalLabels:
+        release: keda
     podMonitor:
       enabled: true
+      additionalLabels:
+        release: keda
     enabled: true
