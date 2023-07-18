@@ -1,3 +1,9 @@
 logging:
   operator:
     level: "debug"
+
+prometheus:
+  operator:
+    podMonitor:
+      enabled: true
+    enabled: true
