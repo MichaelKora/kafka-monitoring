@@ -24,6 +24,9 @@
   tags:
     - init
 
+- name: Reload Inventory
+  meta: refresh_inventory
+
 - name: Show IP addresses
   debug:
     msg: "ssh root@{{ hostvars[item]['ansible_host'] }}"
