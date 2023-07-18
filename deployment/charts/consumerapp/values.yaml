@@ -14,34 +14,31 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 15
+    scaleUpWindow: 90
     policies:
       - type: Pods
-        value: 8
+        value: 2
         periodSeconds: 15
   scaleDown:
     scaleDownWindow: 300
     policies:
       - type: Pods
         value: 2
-        periodSeconds: 30
+        periodSeconds: 15
   hpa:
-    enabled: true
+    enabled: false
     targetCPUUtilizationPercentage: 80
   keda:
-    enabled: false
+    enabled: true
     pollingInterval: 30
     cooldownPeriod: 300
     triggers:
-      - type: cpu
-        metricType: Utilization
-        metadata:
-          value: "80"
       - type: kafka
         metadata:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
           topic: topic1
+          allowIdleConsumers: true
           lagThreshold: "1000"
           offsetResetPolicy: latest
 
