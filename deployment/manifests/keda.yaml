@@ -4,6 +4,8 @@ logging:
 
 prometheus:
   operator:
+    serviceMonitor:
+      enabled: true
     podMonitor:
       enabled: true
     enabled: true
