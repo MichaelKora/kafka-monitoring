@@ -9,9 +9,4 @@ prometheus:
       namespace: keda
       additionalLabels:
         release: keda
-    podMonitor:
-      enabled: true
-      namespace: keda
-      additionalLabels:
-        release: keda
     enabled: true
