@@ -14,7 +14,7 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 24
   scaleUp:
-    scaleUpWindow: 90
+    scaleUpWindow: 30
     policies:
       - type: Pods
         value: 2
@@ -26,10 +26,10 @@ autoscaling:
         value: 2
         periodSeconds: 15
   hpa:
-    enabled: false
-    targetCPUUtilizationPercentage: 80
-  keda:
     enabled: true
+    targetCPUUtilizationPercentage: 85
+  keda:
+    enabled: false
     pollingInterval: 30
     cooldownPeriod: 300
     triggers:
