@@ -38,7 +38,6 @@ autoscaling:
           bootstrapServers: cluster-kafka-bootstrap.kafka:9092
           consumerGroup: group1
           topic: topic1
-          allowIdleConsumers: "true"
           lagThreshold: "1000"
           offsetResetPolicy: latest
 
