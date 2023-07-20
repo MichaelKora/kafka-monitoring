@@ -2,7 +2,7 @@
 
 This workflow description assumes you've configured your `gcloud` cli like described [here](SETUP_GCLOUD.md).
 ```bash
-# don't forged to connect gcloud to the project
+# don't forget to connect gcloud to the project
 gcloud config set project pj-distributed-systems-sose23
 # or
 gcloud config set project pj-ds-sose23-cluster3
