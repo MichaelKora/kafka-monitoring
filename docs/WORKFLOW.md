@@ -12,7 +12,8 @@ gcloud config set project setup-dspj-1
 
 ### Create a test topic
 To create a topic, open a terminal inside the zookeeper pod and create a topic, like:
-`bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 24 --replication-factor 1`
+`bin/kafka-topics.sh --create --topic topic1 --bootstrap-server cluster-kafka-bootstrap.kafka:9092 --partitions 24 --replication-factor 1`. 
+Make sure you have at least as many partitions as desired maximum replicas of your consumerapp.
 Each time after cluster or VMs have been killed, you need to create the test topic again.
 If you increase or lower the max number of replicas, remember to update the partitions.
 
@@ -47,7 +48,7 @@ If you updated the applications in any way, and you want the cluster to use the 
 be aware, that you need to update the version tag each time you update one of the applications.
 Otherwise, Kubernetes will not pull the new version from the registry.
 
-To do so, update the `appversion` in the [producer app chart](../deployment/charts/producerapp/Chart.yaml) or
+To do so, update the `appVersion` in the [producer app chart](../deployment/charts/producerapp/Chart.yaml) or
 [consumer app chart](../deployment/charts/consumerapp/Chart.yaml).
 Then, copy the version tag (without the quotation marks), expose the version as variable in your terminal
 and tag the new image with the updated version while building and pushing like in the examples below.
