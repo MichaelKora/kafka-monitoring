@@ -2,42 +2,32 @@ package de.tuberlin.dos.monitoring.producer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Producer {
 
 	//-----------------Variables------------------------
-	private static final String BOOTSTRAP_SERVERS ="cluster-kafka-bootstrap.kafka:9092"; // "localhost:9092";   //
+	private static final String BOOTSTRAP_SERVERS ="cluster-kafka-bootstrap.kafka:9092";
 	private static final String TOPIC = Objects.requireNonNullElse(System.getenv("TOPIC_NAME"), "topic1");
 	private static final Logger log = LoggerFactory.getLogger(Producer.class);
-	private static int sleeptimeSeconds = 5;  //Change for debugging
+	private static int sleeptimeSeconds = 5;
 	private static int seed = 1;
 	private static int messagesMinute = 5000;
 	private static int patternWindow = 10; // amount of times data is sent
-
-	//--------------Interfaces---------------------
-	@FunctionalInterface
-	private interface WorkloadStrategy {
-		void apply(KafkaProducer<String, String> producer);
-	}
 	
 	//--------------MAIN------------------------
 	public static void main(String[] args) {
 
 		WorkloadStrategy workloadStrategy = pickWorkloadStrategy(args);
 
-		KafkaProducer<String, String> producer = createProducer();
+		KafkaProducer<String, String> producer = ProducerFactory.create(BOOTSTRAP_SERVERS);
 		createShutdownHook(producer);
 		runMessageLoop(producer, workloadStrategy);
 	}
@@ -61,7 +51,13 @@ public class Producer {
 
 		if (args.length != 4) {
 			throw new RuntimeException(
-					"You have to pick: \n 1. A workload pattern (String) \n 2. A random seed/patttern Window (int) \n 3. Messages per Minute (int) \n 4. Sleeptime (int): \n Choose 'STATIC'/'PATTERN'/'RANDOM'/'STAIR', <Number>(default 1 (10)), <Number>(default 5000).<Number>(default 5)");
+					"""
+							You have to pick:\s
+							 1. A workload pattern (String)\s
+							 2. A random seed/patttern Window (int)\s
+							 3. Messages per Minute (int)\s
+							 4. Sleeptime (int):\s
+							 Choose 'STATIC'/'PATTERN'/'RANDOM'/'STAIR', <Number>(default 1 (10)), <Number>(default 5000).<Number>(default 5)""");
 		}
 		try {
 			messagesMinute = Integer.parseInt(args[2]);
@@ -92,6 +88,7 @@ public class Producer {
 		}
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
 	}
+
 	private static void setArgument(boolean randomPattern, String arg1) {
 		if (randomPattern) {
 			try {
@@ -106,33 +103,6 @@ public class Producer {
 				throw new NumberFormatException("Sorry, the second argument (Pattern Window Size) couldn't be parsed as an Integer: " + e);
 			}
 		}
-	}
-	
-// ----------------Basic Kafka SetUp--------------------------
-	@NotNull
-	private static KafkaProducer<String, String> createProducer() {
-
-		Properties properties = new Properties();
-		properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString( 1024));
-		properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "5");
-		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-
-		return new KafkaProducer<>(properties);
-	}
-	private static void createShutdownHook(KafkaProducer<String, String> producer) {
-		final Thread mainThread = Thread.currentThread();
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				producer.close();
-				try {
-					mainThread.join();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
 	}
 
 //----------------Message Producing Strategies-------------------------------
@@ -230,6 +200,20 @@ public class Producer {
 		catch (InterruptedException e) {
 			throw new RuntimeException("Could not send the producer to bed...", e);
 		}
+	}
+
+	private static void createShutdownHook(KafkaProducer<String, String> producer) {
+		final Thread mainThread = Thread.currentThread();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				producer.close();
+				try {
+					mainThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
 }

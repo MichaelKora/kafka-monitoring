@@ -14,13 +14,14 @@ import org.slf4j.LoggerFactory;
 
 public class MetricsExporter {
 
+	private static final String[] TAGS = {"application", "consumerapp"};
 	private static final Logger log = LoggerFactory.getLogger(MetricsExporter.class);
 	private PrometheusMeterRegistry prometheusRegistry;
 
 	public static MetricsExporter create() {
 		MetricsExporter metricsExporter = new MetricsExporter();
 		metricsExporter.prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
-		metricsExporter.prometheusRegistry.config().commonTags("application", "consumerapp");
+		metricsExporter.prometheusRegistry.config().commonTags(TAGS);
 		metricsExporter.wirePrometheus();
 		return metricsExporter;
 	}

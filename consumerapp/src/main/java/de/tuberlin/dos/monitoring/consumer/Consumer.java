@@ -5,16 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import io.micrometer.core.instrument.Timer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +30,7 @@ public class Consumer {
 
 		WorkloadStrategy workloadStrategy = pickWorkloadStrategy(args);
 
-		try (KafkaConsumer<String, String> consumer = createConsumer()) {
+		try (KafkaConsumer<String, String> consumer = ConsumerFactory.create(BOOTSTRAP_SERVERS, GROUP_ID)) {
 			createShutdownHook(consumer);
 			consumer.subscribe(List.of(TOPIC));
 			runPollingLoop(consumer, workloadStrategy);
@@ -60,18 +57,6 @@ public class Consumer {
 		if (Objects.equals(args[0], "MEM")) return Consumer::memoryIntenseStrategy;
 		if (Objects.equals(args[0], "MIXED")) return Consumer::mixedStrategy;
 		throw new RuntimeException("Unknown workload strategy: %s%n".formatted(args[0]));
-	}
-
-	private static KafkaConsumer<String, String> createConsumer() {
-		// create consumer configs
-		Properties properties = new Properties();
-		properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-		properties.setProperty(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
-		properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-		properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-		return new KafkaConsumer<>(properties);
 	}
 
 	private static void runPollingLoop(KafkaConsumer<String, String> consumer, WorkloadStrategy workloadStrategy) {
@@ -102,27 +87,21 @@ public class Consumer {
 	}
 
 	private static void createShutdownHook(KafkaConsumer<String, String> consumer) {
-		// get a reference to the current thread
+
 		final Thread mainThread = Thread.currentThread();
 
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				log.info("Detected a shutdown, let's exit by calling consumer.wakeup()...");
-				consumer.wakeup();
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
-				try {
-					mainThread.join();
-				}
-				catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			log.info("Detected a shutdown, let's exit by calling consumer.wakeup()...");
+			consumer.wakeup();
+
+			try {
+				mainThread.join();
 			}
-		});
-	}
-
-	@FunctionalInterface
-	private interface WorkloadStrategy {
-		void apply(ConsumerRecord<String, String> record);
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}));
 	}
 
 	private static void cpuIntenseStrategy(ConsumerRecord<String, String> record) {
