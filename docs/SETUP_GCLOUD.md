@@ -4,7 +4,7 @@
 
 - Install ansible using your package manager like `sudo apt install ansible` or follow this guide https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 - Install the `gcloud` CLI using this guide https://cloud.google.com/sdk/docs/install
-- Activate the current project and make sure `gcloud` is running
+- Activate the current project via `gcloud config set project $PROJECT_ID` and make sure `gcloud` is running 
 - Create local file `.vault_pass` and insert the password
 
 ## 1.1 Configure GCP
