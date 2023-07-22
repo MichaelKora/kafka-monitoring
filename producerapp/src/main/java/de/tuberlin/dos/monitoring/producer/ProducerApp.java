@@ -11,8 +11,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.common.errors.WakeupException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import picocli.CommandLine;
 
-public class ProducerApp {
+public class ProducerApp implements Runnable {
 
 	private static final String BOOTSTRAP_SERVERS = Objects.requireNonNullElse(
 			System.getenv("KAFKA_BOOTSTRAP_SERVERS"), "cluster-kafka-bootstrap.kafka:9092"
@@ -22,18 +23,22 @@ public class ProducerApp {
 	);
 	private static final Logger log = LoggerFactory.getLogger(ProducerApp.class);
 	@Option(names = "--workload-strategy", required = true)
-	private static String workloadStrategyOption;
+	private String workloadStrategyOption;
 	@Option(names = "--sleeptime-seconds", defaultValue = "5")
-	private static int sleeptimeSeconds;
+	private int sleeptimeSeconds;
 	@Option(names = "--seed", defaultValue = "1")
-	private static int seed;
+	private int seed;
 	@Option(names = "--messages-per-minute", defaultValue = "5000", description = "Amount of messages sent per minute.")
-	private static int messagesPerMinute;
+	private int messagesPerMinute;
 	@Option(names = "--pattern-window", defaultValue = "10", description = "Amount of times data is sent")
-	private static int patternWindow;
+	private int patternWindow;
 
 	public static void main(String[] args) {
+		new CommandLine(new ProducerApp()).execute(args);
+	}
 
+	@Override
+	public void run() {
 		WorkloadContext workloadContext = new WorkloadContext(topic, sleeptimeSeconds, seed, messagesPerMinute, patternWindow);
 		WorkloadStrategy workloadStrategy = Strategies.forWorkloadContext(workloadContext)
 													  .pickWorkloadStrategy(workloadStrategyOption);
@@ -42,6 +47,7 @@ public class ProducerApp {
 		createShutdownHook(producer);
 		runMessageLoop(producer, workloadStrategy);
 	}
+
 	private static void runMessageLoop(KafkaProducer<String, String> producer, WorkloadStrategy workloadStrategy) {
 		try (producer) {
 			while (true) {
