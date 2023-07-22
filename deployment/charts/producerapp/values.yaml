@@ -6,9 +6,9 @@ image:
   pullPolicy: Always
 
 arguments:
-  - "--workload-strategy static"
-  - "--sleeptime-seconds 30"
-  - "--messages-per-minute 10000"
-  - "--pattern-window 5"
+  - "--workload-strategy=static"
+  - "--sleeptime-seconds=30"
+  - "--messages-per-minute=10000"
+  - "--pattern-window=5"
 
 topic: topic1
