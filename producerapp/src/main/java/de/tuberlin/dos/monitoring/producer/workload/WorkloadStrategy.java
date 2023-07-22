@@ -1,4 +1,4 @@
-package de.tuberlin.dos.monitoring.producer;
+package de.tuberlin.dos.monitoring.producer.workload;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 
