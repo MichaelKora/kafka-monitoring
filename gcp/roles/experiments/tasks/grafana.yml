@@ -14,7 +14,7 @@
     grafana_ip: "{{ result.stdout }}"
 
 - name: Enable Grafana Portforward
-  command: <
+  command: >
     gcloud compute ssh controller-1
     --zone=europe-west1-b
     --
@@ -22,6 +22,8 @@
   delegate_to: localhost
   connection: local
   changed_when: false
+  async: 99999999
+  poll: 0
 
 - name: Show link to Grafana
   debug:

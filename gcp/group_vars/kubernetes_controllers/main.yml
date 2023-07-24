@@ -6,7 +6,7 @@ autoscaling_enabled: true
 autoscaling_min_replicas: 1
 autoscaling_max_replicas: 24
 autoscaling_scale_up: 
-  windows: 15
+  window: 15
   policies:
     # - type: percent
     #   value: 100
@@ -35,10 +35,11 @@ autoscaling_keda:
 
 # Producer
 # Choose: Static, Pattern, Random, Stair
-workload_pattern: Static
-pattern_window: 30
-messages_per_minute: 1500
-sleep_time: 5
+producer_workload_pattern: Static
+producer_pattern_window: 30
+producer_messages_per_minute: 1500
+producer_sleep_time: 5
+producer_replica_count: 1
 
 # Resources
 autoscaling_resources:
@@ -63,7 +64,7 @@ experiments:
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
       autoscaling_scale_up: 
-        windows: 15
+        window: 15
         policies:
           - type: Pods
             value: 2
@@ -93,7 +94,7 @@ experiments:
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
       autoscaling_scale_up: 
-        windows: 15
+        window: 15
         policies:
           - type: Pods
             value: 2
@@ -123,7 +124,7 @@ experiments:
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
       autoscaling_scale_up: 
-        windows: 15
+        window: 15
         policies:
           - type: Pods
             value: 2

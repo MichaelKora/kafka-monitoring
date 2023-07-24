@@ -1,0 +1,14 @@
+name: producerapp
+# just scale up in case you want to start producing messages
+replicaCount: {{ producer_replica_count }}
+image:
+  repository: avarange/pj-ds-producer
+  pullPolicy: Always
+
+arguments:
+  - "--workload-strategy={{ producer_workload_pattern }}"
+  - "--sleeptime-seconds={{ producer_sleep_time }}"
+  - "--messages-per-minute={{ producer_messages_per_minute }}"
+  - "--pattern-window={{ producer_pattern_window }}"
+
+topic: topic1

@@ -10,16 +10,16 @@
 
 - name: Render consumer settings
   template:
-    src: kafka-monitoring/deployment/charts/consumerapp/values.yml
-    dest: kafka-monitoring/deployment/charts/consumerapp/values.yml
+    src: kafka-monitoring/deployment/charts/consumerapp/values.yaml
+    dest: kafka-monitoring/deployment/charts/consumerapp/values.yaml
     owner: root
     group: root
     mode: 0640
 
 - name: Render producer settings
   template:
-    src: kafka-monitoring/deployment/charts/producerapp/values.yml
-    dest: kafka-monitoring/deployment/charts/producerapp/values.yml
+    src: kafka-monitoring/deployment/charts/producerapp/values.yaml
+    dest: kafka-monitoring/deployment/charts/producerapp/values.yaml
     owner: root
     group: root
     mode: 0640
