@@ -6,9 +6,9 @@ image:
   pullPolicy: Always
 
 arguments:
-  - {{ workload_pattern }}
-  - "{{ pattern_window }}"
-  - "{{ messages_per_minute }}"
-  - "{{ sleep_time }}"
+  - "--workload-strategy={{ workload_pattern }}"
+  - "--sleeptime-seconds={{ sleep_time }}"
+  - "--messages-per-minute={{ messages_per_minute }}"
+  - "--pattern-window={{ pattern_window }}"
 
 topic: topic1

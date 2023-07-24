@@ -14,19 +14,18 @@ autoscaling:
   enabled: {{ autoscaling_enabled }}
   minReplicas: {{ autoscaling_min_replicas }}
   maxReplicas: {{ autoscaling_max_replicas }}
-#  targetCPUUtilizationPercentage: {{ autoscaling_target_cpu_util }}
   scaleUp:
-    scaleUpWindow: {{ autoscaling_scale_up_window }}
+    scaleUpWindow: {{ autoscaling_scale_up['window'] }}
     policies:
-{% for policy in autoscaling_scale_up_policy %}
+{% for policy in autoscaling_scale_up['policies'] %}
       - type: {{ policy['type'] }}
         value: {{ policy['value'] }}
         periodSeconds: {{ policy['period_seconds'] }}
 {% endfor %}
   scaleDown:
-    scaleDownWindow: {{ autoscaling_scale_down_window }}
+    scaleDownWindow: {{ autoscaling_scale_down['window'] }}
     policies:
-{% for policy in autoscaling_scale_down_policy %}
+{% for policy in autoscaling_scale_down['policies'] %}
       - type: {{ policy['type'] }}
         value: {{ policy['value'] }}
         periodSeconds: {{ policy['period_seconds'] }}
@@ -54,8 +53,11 @@ autoscaling:
 
 resources:
   limits:
-    cpu: "250m"
-    memory: "256Mi"
+    cpu: "{{ autoscaling_resources['limits']['cpu'] }}"
+    memory: "{{ autoscaling_resources['limits']['memory'] }}"
+  requests:
+    cpu: "{{ autoscaling_resources['requests']['cpu'] }}"
+    memory: "{{ autoscaling_resources['requests']['memory'] }}"
 
 arguments:
   - CPU

@@ -34,8 +34,9 @@
     - never
     - setup
 
-- name: Test Experiments
-  hosts: kubernetes_controllers
+- name: Prepare and Run Experiments
+  gather_facts: False
+  hosts: kubernetes_controllers  
   roles:
     - experiments
   tags:

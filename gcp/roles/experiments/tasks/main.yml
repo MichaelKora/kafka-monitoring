@@ -1,61 +1,11 @@
 ---
-# - name: Render consumer settings
-#   template:
-#     src: kafka-monitoring/deployment/charts/consumerapp/values.yml
-#     dest: kafka-monitoring/deployment/charts/consumerapp/values.yml
-#     owner: root
-#     group: root
-#     mode: 0640
+- name: Make Grafana accessable
+  include_tasks:
+    file: grafana.yml
 
-# - name: Render producer settings
-#   template:
-#     src: kafka-monitoring/deployment/charts/producerapp/values.yml
-#     dest: kafka-monitoring/deployment/charts/producerapp/values.yml
-#     owner: root
-#     group: root
-#     mode: 0640
-
-# - name: Apply changes
-#   command:
-#     cmd: helmfile apply
-#     chdir: /root/kafka-monitoring/deployment
-#   changed_when: false
-
-- name: Get Grafana Cluster IP
-  command: >
-    kubectl get service
-    -n monitoring
-    --selector=app.kubernetes.io/name=grafana
-    -o custom-columns=ip:spec.clusterIP
-    --no-headers
-  changed_when: false
-  register: result
-
-- name: Parse Grafana Cluster IP
-  set_fact:
-    grafana_ip: "{{ result.stdout }}"
-
-- name: Show link to Grafana
-  debug:
-    msg:
-      - --------------------------------------
-      - ATTENTION
-      - --------------------------------------
-      - This playbook will not terminate. To
-      - quit hit CTRL + C
-      - ""
-      - Open Grafana via http://localhost:3000
-      - ""
-      - or enable port-forwarding yourself with
-      - blocking command
-      - "gcloud compute ssh controller-1 --zone=europe-west1-b -- -NL 3000:{{ grafana_ip }}:80"
-
-- name: Enable Grafana Portforward
-  command: >
-    gcloud compute ssh controller-1
-    --zone=europe-west1-b
-    --
-    -NL 3000:"{{ grafana_ip }}":80
-  delegate_to: localhost
-  connection: local
-  changed_when: false
+- name: Test Experiment
+  include_tasks:
+    file: experiment.yml
+  loop: "{{ experiments }}"
+  loop_control:
+    loop_var: experiment

@@ -1,0 +1,35 @@
+---
+- name: Preparing Experiment
+  debug:
+    msg: "{{ experiment['name']}} - Duration: {{ experiment['duration'] }}h"
+
+- name: Updating values
+  set_fact:
+    "{{ item.key }}": "{{ item.value }}"
+  loop: "{{ experiment['values'] | dict2items }}"
+
+- name: Render consumer settings
+  template:
+    src: kafka-monitoring/deployment/charts/consumerapp/values.yml
+    dest: kafka-monitoring/deployment/charts/consumerapp/values.yml
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Render producer settings
+  template:
+    src: kafka-monitoring/deployment/charts/producerapp/values.yml
+    dest: kafka-monitoring/deployment/charts/producerapp/values.yml
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Apply changes
+  command:
+    cmd: helmfile apply
+    chdir: /root/kafka-monitoring/deployment
+  changed_when: false
+
+- name: Wait {{ experiment['duration'] }}h for experiment to finish
+  pause:
+    minutes: "{{ (experiment['duration'] * 60) | int }}"
