@@ -4,6 +4,7 @@ import static picocli.CommandLine.Option;
 
 import java.util.Objects;
 
+import de.tuberlin.dos.monitoring.producer.factory.ProducerFactory;
 import de.tuberlin.dos.monitoring.producer.workload.Strategies;
 import de.tuberlin.dos.monitoring.producer.workload.WorkloadContext;
 import de.tuberlin.dos.monitoring.producer.workload.WorkloadStrategy;

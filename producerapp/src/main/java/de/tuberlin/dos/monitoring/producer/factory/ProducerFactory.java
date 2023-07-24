@@ -1,4 +1,4 @@
-package de.tuberlin.dos.monitoring.producer;
+package de.tuberlin.dos.monitoring.producer.factory;
 
 import java.util.Properties;
 
