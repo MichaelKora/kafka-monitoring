@@ -60,6 +60,6 @@ resources:
     memory: "{{ autoscaling_resources['requests']['memory'] }}"
 
 arguments:
-  - CPU
+  - "--utilization-strategy={{ consumer_utilization_strategy }}"
 
 topic: topic1
