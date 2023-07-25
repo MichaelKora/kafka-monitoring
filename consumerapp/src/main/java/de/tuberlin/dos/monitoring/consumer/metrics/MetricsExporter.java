@@ -1,4 +1,4 @@
-package de.tuberlin.dos.monitoring.consumer;
+package de.tuberlin.dos.monitoring.consumer.metrics;
 
 import java.io.IOException;
 import java.io.OutputStream;

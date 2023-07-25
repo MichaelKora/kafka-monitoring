@@ -54,6 +54,6 @@ resources:
     memory: "512Mi"
 
 arguments:
-  - CPU
+  - "--utilization-strategy=CPU"
 
 topic: topic1

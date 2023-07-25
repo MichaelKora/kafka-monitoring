@@ -1,4 +1,4 @@
-package de.tuberlin.dos.monitoring.consumer;
+package de.tuberlin.dos.monitoring.consumer.factory;
 
 import java.util.Properties;
 
