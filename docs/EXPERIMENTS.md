@@ -3,13 +3,11 @@ This guide will show to run a series of experiments in the Google Cloud. It is r
 
 ## Variables
 All variables are definied in the Ansible `group_vars` file of the group `kubernetes_controllers`.
-The file is located at:
-```
-gcp/group_vars/kubernetes_controllers/main.yml
-```
+
+The file is located at: [/gcp/group_vars/kubernetes_controllers/main.yml](../gcp/group_vars/kubernetes_controllers/main.yml)
 
 At top of the file you find the default values for the consumer, the producer and the resources.
-Ansible will render the file located at `deplyment/charts/{consumerapp,producerapp}/values.yaml`.
+Ansible will render the file located at helm chat values file for [consumer](../deployment/charts/consumerapp/values.yaml), [producer](../deployment/charts/producerapp/values.yaml). (For details see the [Ansible template](../gcp/roles/experiments/templates/kafka-monitoring/deployment/charts/)).
 
 At the end of `group_vars` file you find the list of dicts `experiments`. Each entry defines an experiment round.
 It has to consist of:
@@ -68,7 +66,7 @@ Dict elem 3: value
 ```
 
 ## Starting the experiment
-Assume that the experiment series is setup in `group_vars/kubernetes_controllers/main.yml` wanted.
+Assume that the experiment series is setup in [/gcp/group_vars/kubernetes_controllers/main.yml](../gcp/group_vars/kubernetes_controllers/main.yml) wanted.
 1. Open a terminal go into the directory `gcp`.
 2. Make sure the gcloud cluster is running by using the command: 
 ```
