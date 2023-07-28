@@ -17,6 +17,33 @@ It has to consist of:
 - A int or float `duration` in hours
 - A dict `values` defining, which values should be changed. **Note**: You can only set values relatively to the last round. Make sure to add all values to prevent unexpected parameter sets.
 
+### Consumer
+|Configuration|Meaning|
+|---|---|
+|autoscaling_enabled|Enables the HPA autoscaler (Default: true)|
+|autoscaling_min_replicas|How many replicas should be there at least. (Default: 1)|
+|autoscaling_max_replicas|How many replicas should be there at most. Keep in mind to adjust the number of partitions accordingly. (Default: 24)|
+|autoscaling_scale_up|Configures scaling up behaviour. Dict values are `window` and `policies`, consisting of `type`, `value` and `period_seconds`|
+|autoscaling_scale_down|Configures scaling down behaviour. Dict values are `window` and `policies`, consisting of `type`, `value` and `period_seconds`|
+|autoscaling_hpa|Necessary to set the CPU target utilization. Dict values are `enabled` and `target_cpu_util`.(Default: 80)|
+|autoscaling_keda|Configures behaviour of keda. Dict values are `enabled`, `polling_interval`. `cooldown_period`, `trigger_cpu_value` and `trigger_kafka_lag_threshold`|
+
+### Producer
+|Configuration|Meaning|
+|---|---|
+|producer_workload_pattern|Choose the applied workload pattern. Valid strings are: **Static**, **Pattern**, **Random**, **Stair**|
+|producer_pattern_window|Controls the duraction of one pattern cycle. (Default: 30)|
+|producer_messages_per_minute|Controls the amount of messages per minute. (Default: 1500)|
+|producer_sleep_time|Controls the timeout between sending messages to Kafka. (Default: 5)|
+|producer_replica_count|Triggers to start sending messages. Setting to 0 to disable the producer. (Default: 1)|
+
+### Resources
+|Configuration|Meaning|
+|---|---|
+|autoscaling_resources|Controls the pod's resources. Consists of dict `limits` and `requets`. Each contain of `cpu` (ending with `m`, Default:`250m`) and `memory` (ending with `Mi`, Default: `512Mi`)|
+
+For detailed informartion have a look at the kubernetes documentation: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
 ## Ansible hint:
 A list always starts with a `-`, while each element of a dict is just added intended.
 Example:
@@ -43,9 +70,15 @@ Dict elem 3: value
 ## Starting the experiment
 Assume that the experiment series is setup in `group_vars/kubernetes_controllers/main.yml` wanted.
 1. Open a terminal go into the directory `gcp`.
-2. Make sure the gcloud cluster is running by using the command: `ansible-playbook playbook.yml -t start`
-3. Init the experiment with the command: `ansible-playbook playbook.yml -t experiments`
-4. The playbook will make the Grafana instance available by using Port-forwarding and show you the link. Confirm to start the experiment by pressing any button
+2. Make sure the gcloud cluster is running by using the command: 
+```
+ansible-playbook playbook.yml -t start
+```
+4. Init the experiment with the command: 
+```
+ansible-playbook playbook.yml -t experiments
+```
+5. The playbook will make the Grafana instance available by using Port-forwarding and show you the link. Confirm to start the experiment by pressing any button
 ```
 TASK [experiments : Show link to Grafana] *************************************************
 ok: [controller-1] => {
@@ -64,5 +97,5 @@ ok: [controller-1] => {
     ]
 }
 ```
-5. The configuration is rendered, uploaded and applied. Afterwards the playbook prints when it is ready and waits for the experiment round to finish.
-6. You should be able to see and export the values in the Grafana Dashboard.
+6. The configuration is rendered, uploaded and applied. Afterwards the playbook prints when it is ready and waits for the experiment round to finish.
+7. You should be able to see and export the values in the Grafana Dashboard.
