@@ -32,14 +32,14 @@ autoscaling_scale_down:
       period_seconds: 60
 # be aware that HPA and KEDA are exclusive - choose one of them by setting "enabled" to true or false exclusively
 autoscaling_hpa:
-  enabled: true
+  enabled: false
   target_cpu_util: 80
 autoscaling_keda:
-  enabled: false
+  enabled: true
   polling_interval: 30
   cooldown_period: 300
   trigger_cpu_value: 80
-  trigger_kafka_lag_threshold: 1000
+  trigger_kafka_lag_threshold: 100
 autoscaling_util_strategy: CPU
 
 # Producer
@@ -51,14 +51,14 @@ producer_sleep_time: 5
 producer_replica_count: 1
 
 # Resources
+# KEDA only takes the requests into account!
 autoscaling_resources:
   limits:
-    cpu: "250m"
+    cpu: "500"
     memory: "512Mi"
   requests:
-    cpu: "250m"
+    cpu: "500m"
     memory: "512Mi"
-
 
 
 # Experiment Series
