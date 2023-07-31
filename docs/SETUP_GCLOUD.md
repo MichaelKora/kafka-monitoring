@@ -43,6 +43,8 @@ ansible-playbook playbook.yml -t stop
 Run this command to install Docker and Kubernetes, Helm, HelmFile (and all dependencies) on the virtual machines
 
 ```
+# right after spinning up the VM's the following command can fail because they need some time to be fully ready 
+# to enable ssh-connection 
 ansible-playbook playbook.yml -t setup
 ```
 
