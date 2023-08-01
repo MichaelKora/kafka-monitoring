@@ -9,9 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 public class Strategies {
 
-	private static final int MESSAGE_DUMP_CAPACITY = 1_000_000;
-	private static final List<String> messageDump = new ArrayList<>(MESSAGE_DUMP_CAPACITY);
-
 	public static UtilizationStrategy pickUtilizationStrategy(String utilizationStrategyOption) {
 		return switch (utilizationStrategyOption.toUpperCase()) {
 			case "CPU" -> Strategies::cpuIntenseStrategy;
@@ -30,14 +27,7 @@ public class Strategies {
 	}
 
 	private static void memoryIntenseStrategy(ConsumerRecord<String, String> record) {
-		if (messageDump.size() == MESSAGE_DUMP_CAPACITY) {
-			messageDump.clear();
-		}
-		String concatenated = "";
-		for (int i = 0; i < 10; i++) {
-			concatenated += record.value();
-		}
-		messageDump.add(concatenated);
+		throw new UnsupportedOperationException("Not implemented yet.");
 	}
 
 	private static void mixedStrategy(ConsumerRecord<String, String> record) {
