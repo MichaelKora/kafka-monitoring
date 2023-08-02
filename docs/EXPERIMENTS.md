@@ -15,6 +15,13 @@ It has to consist of:
 - A int or float `duration` in hours
 - A dict `values` defining, which values should be changed. **Note**: You can only set values relatively to the last round. Make sure to add all values to prevent unexpected parameter sets.
 
+### Kafka
+|Configuration|Meaning|
+|---|---|
+|kafka_topic|Name of the kafka topic. (Default: topic1)|
+|kafka_enforce_partitions|By default number of partitions is set to `autoscaling_max_replicas`. If you want to overwrite that this value to true. (Default: false)|
+|kafka_partitions|Only applied if `kafka_enforce_partitions` is true. Will set number of kafka partitions in each experiment round. (Default: -1)|
+
 ### Consumer
 |Configuration|Meaning|
 |---|---|
