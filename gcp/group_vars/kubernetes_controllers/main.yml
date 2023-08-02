@@ -1,11 +1,18 @@
 ---
 # Default values
 # -----------------------------------------------------------------
+# Kafka
+# kafka_partitions will only be used if kafka_enforce_partitions is
+# true. Default is the value of autoscaling_max_replicas
+kafka_topic: topic1
+kafka_enforce_partitions: false
+kafka_partitions: -1
+
 # Consumer
 autoscaling_enabled: true
 autoscaling_min_replicas: 1
 autoscaling_max_replicas: 24
-autoscaling_scale_up: 
+autoscaling_scale_up:
   window: 15
   policies:
     # - type: percent
@@ -51,6 +58,8 @@ autoscaling_resources:
     cpu: "250m"
     memory: "512Mi"
 
+autoscaling_util_strategy: CPU
+
 
 # Experiment Series
 # -----------------------------------------------------------------
@@ -64,7 +73,7 @@ experiments:
       autoscaling_enabled: true
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
-      autoscaling_scale_up: 
+      autoscaling_scale_up:
         window: 15
         policies:
           - type: Pods
@@ -94,7 +103,7 @@ experiments:
       autoscaling_enabled: true
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
-      autoscaling_scale_up: 
+      autoscaling_scale_up:
         window: 15
         policies:
           - type: Pods
@@ -124,7 +133,7 @@ experiments:
       autoscaling_enabled: true
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
-      autoscaling_scale_up: 
+      autoscaling_scale_up:
         window: 15
         policies:
           - type: Pods

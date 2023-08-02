@@ -60,6 +60,6 @@ resources:
     memory: "{{ autoscaling_resources['requests']['memory'] }}"
 
 arguments:
-  - "--utilization-strategy={{ consumer_utilization_strategy }}"
+  - "--utilization-strategy={{ autoscaling_util_strategy }}"
 
-topic: topic1
+topic: "{{ kafka_topic }}"

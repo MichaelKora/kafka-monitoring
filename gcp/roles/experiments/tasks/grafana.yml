@@ -43,4 +43,4 @@
 - name: Finish Preparation
   pause:
     prompt: Press any key to start series of experiments
-    echo: False
+    echo: false

@@ -3,7 +3,7 @@
   include_tasks:
     file: grafana.yml
 
-- name: Test Experiment
+- name: Run Experiment
   include_tasks:
     file: experiment.yml
   loop: "{{ experiments }}"

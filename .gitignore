@@ -47,6 +47,7 @@ terraform.rc
 
 # GCP 
 gcp/id_rsa*
+gcp/hosts.cfg
 
 .vault_pass
 **/.vault_pass
