@@ -56,23 +56,15 @@ and tag the new image with the updated version while building and pushing like i
 ### producerapp
 ```shell
 # Build producer app and push to registry (assuming you are in the projects root dir)
-VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t avarange/pj-ds-producer:$VERSION -f ./producerapp/Dockerfile ./producerapp 
-docker push avarange/pj-ds-producer:$VERSION
-# apply new version to cluster
-cd deployment
-helmfile apply 
+VERSION={VERSION} # like 0.4.3
+./scripts/update-producer-version.sh $VERSION
 ```
 
 ### consumerapp
 ```shell
 # Build consumer app and push to registry (assuming you are in the projects root dir)
-VERSION={VERSION} # replace {VERSION} with the current tag, something like 0.1.1
-docker build -t avarange/pj-ds-consumer:$VERSION -f ./consumerapp/Dockerfile ./consumerapp 
-docker push avarange/pj-ds-consumer:$VERSION
-# apply new version to cluster
-cd deployment
-helmfile apply 
+VERSION={VERSION} # like 0.4.3
+./scripts/update-consumer-version.sh $VERSION
  ```
 
 ### Local registry
