@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 33,
+  "id": 35,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -284,28 +284,18 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "Latency in seconds",
+            "axisLabel": "Replicas",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
-            },
-            "showPoints": "always",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -326,20 +316,7 @@
             ]
           }
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "average over all"
-            },
-            "properties": [
-              {
-                "id": "custom.fillOpacity",
-                "value": 25
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "gridPos": {
         "h": 10,
@@ -347,18 +324,30 @@
         "x": 0,
         "y": 11
       },
-      "id": 15,
+      "id": 2,
+      "interval": "60",
+      "maxDataPoints": 30,
       "options": {
+        "barRadius": 0,
+        "barWidth": 1,
+        "fullHighlight": false,
+        "groupWidth": 0.4,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
-          "showLegend": false
+          "showLegend": true
         },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
           "mode": "single",
           "sort": "none"
-        }
+        },
+        "xField": "Time",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
       },
       "targets": [
         {
@@ -367,10 +356,10 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "message_latency_seconds_max{application=\"consumerapp\"}",
-          "legendFormat": "{{ appId }}",
+          "expr": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=\"consumerapp\"}",
+          "legendFormat": "Current replicas",
           "range": true,
-          "refId": "A"
+          "refId": "Current Replicas"
         },
         {
           "datasource": {
@@ -378,15 +367,15 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "avg by(application) (message_latency_seconds_max{application=\"consumerapp\"})",
+          "expr": "kube_horizontalpodautoscaler_status_desired_replicas{horizontalpodautoscaler=\"consumerapp\"}",
           "hide": false,
-          "legendFormat": "average over all",
+          "legendFormat": "Desired replicas",
           "range": true,
-          "refId": "B"
+          "refId": "Desired Replicas"
         }
       ],
-      "title": "Message processing latency in seconds per consumerapp",
-      "type": "timeseries"
+      "title": "Current/Desired consumer replicas",
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -490,31 +479,11 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "Replicas",
-            "axisPlacement": "auto",
-            "fillOpacity": 80,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineWidth": 1,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
+            "fixedColor": "green",
+            "mode": "fixed"
           },
           "mappings": [],
           "thresholds": {
@@ -534,36 +503,27 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 11,
-        "w": 12,
+        "h": 3,
+        "w": 4,
         "x": 0,
         "y": 21
       },
-      "id": 2,
-      "interval": "60",
-      "maxDataPoints": 35,
+      "id": 16,
       "options": {
-        "barRadius": 0,
-        "barWidth": 1,
-        "fullHighlight": false,
-        "groupWidth": 0.4,
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
         "orientation": "auto",
-        "showValue": "auto",
-        "stacking": "none",
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
         },
-        "xField": "Time",
-        "xTickLabelRotation": 0,
-        "xTickLabelSpacing": 0
+        "textMode": "auto"
       },
+      "pluginVersion": "9.5.5",
       "targets": [
         {
           "datasource": {
@@ -571,26 +531,153 @@
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=\"consumerapp\"}",
-          "legendFormat": "Current replicas",
+          "exemplar": false,
+          "expr": "avg(kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler=\"consumerapp\"})",
+          "interval": "",
+          "legendFormat": "__auto",
           "range": true,
-          "refId": "Current Replicas"
+          "refId": "A"
+        }
+      ],
+      "title": "Avg. Consumer Replicas",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "yellow",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
         },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 21
+      },
+      "id": 17,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.5",
+      "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "prometheus"
           },
           "editorMode": "builder",
-          "expr": "kube_horizontalpodautoscaler_status_desired_replicas{horizontalpodautoscaler=\"consumerapp\"}",
-          "hide": false,
-          "legendFormat": "Desired replicas",
+          "exemplar": false,
+          "expr": "avg(kafka_consumergroup_lag_sum{consumergroup=\"group1\"})",
+          "interval": "",
+          "legendFormat": "__auto",
           "range": true,
-          "refId": "Desired Replicas"
+          "refId": "A"
         }
       ],
-      "title": "Current/Desired consumer replicas",
-      "type": "barchart"
+      "title": "Avg. Lag",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "light-red",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 21
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "reduceOptions": {
+          "calcs": [
+            "max"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.5.5",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "max(kafka_consumergroup_lag_sum{consumergroup=\"group1\"})",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Max Lag",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -797,6 +884,124 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "Latency in seconds",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "average over all"
+            },
+            "properties": [
+              {
+                "id": "custom.fillOpacity",
+                "value": 25
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "message_latency_seconds_max{application=\"consumerapp\"}",
+          "legendFormat": "{{ appId }}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "builder",
+          "expr": "avg by(application) (message_latency_seconds_max{application=\"consumerapp\"})",
+          "hide": false,
+          "legendFormat": "average over all",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Message processing latency in seconds per consumerapp",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -905,13 +1110,13 @@
     "list": []
   },
   "time": {
-    "from": "2023-06-28T18:55:00.000Z",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "workload-monitoring",
-  "uid": "df07a735-6500-4986-9ba3-409d6436a071",
-  "version": 2,
+  "title": "workload-monitoring-final",
+  "uid": "df07a735-6500-4986-9ba3-409d6436a071-12",
+  "version": 3,
   "weekStart": ""
 }
