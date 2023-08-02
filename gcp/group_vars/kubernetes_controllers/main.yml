@@ -40,6 +40,7 @@ autoscaling_keda:
   cooldown_period: 300
   trigger_cpu_value: 80
   trigger_kafka_lag_threshold: 1000
+autoscaling_util_strategy: CPU
 
 # Producer
 # Choose: Static, Pattern, Random, Stair
@@ -58,7 +59,6 @@ autoscaling_resources:
     cpu: "250m"
     memory: "512Mi"
 
-autoscaling_util_strategy: CPU
 
 
 # Experiment Series

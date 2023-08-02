@@ -32,6 +32,7 @@ It has to consist of:
 |autoscaling_scale_down|Configures scaling down behaviour. Dict values are `window` and `policies`, consisting of `type`, `value` and `period_seconds`|
 |autoscaling_hpa|Necessary to set the CPU target utilization. Dict values are `enabled` and `target_cpu_util`.(Default: 80)|
 |autoscaling_keda|Configures behaviour of keda. Dict values are `enabled`, `polling_interval`. `cooldown_period`, `trigger_cpu_value` and `trigger_kafka_lag_threshold`|
+|autoscaling_util_strategy|Choose the workload startegy. Valid Options are **CPU**, **MEM**, **MIXED**. (Default: CPU)|
 
 ### Producer
 |Configuration|Meaning|
