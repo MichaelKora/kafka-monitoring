@@ -85,7 +85,7 @@
     gcloud compute instances create "{{ item }}"
     --project="{{ project_name }}"
     --image=projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20230606
-    --machine-type=e2-standard-2
+    --machine-type=e2-standard-8
     --network=kubernetes-nodes
     --subnet=kubernetes-internal
     --zone=europe-west1-b
