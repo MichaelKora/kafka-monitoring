@@ -15,7 +15,7 @@ autoscaling_max_replicas: 24
 autoscaling_scale_up:
   window: 15
   policies:
-    # - type: percent
+    # - type: Percent
     #   value: 100
     #   period_seconds: 60
     - type: Pods
@@ -24,7 +24,7 @@ autoscaling_scale_up:
 autoscaling_scale_down:
   window: 300
   policies:
-    - type: percent
+    - type: Percent
       value: 100
       period_seconds: 120
     - type: Pods
@@ -81,13 +81,9 @@ experiments:
             period_seconds: 15
       autoscaling_scale_down:
         window: 180
-        policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
-          - type: Pods
-            value: 4
-            period_seconds: 60
+       policies:
+          - type: Podvalue: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 60
@@ -111,13 +107,9 @@ experiments:
             period_seconds: 15
       autoscaling_scale_down:
         window: 180
-        policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
-          - type: Pods
-            value: 4
-            period_seconds: 60
+       policies:
+          - type: Podvalue: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 65
@@ -142,12 +134,9 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
           - type: Pods
-            value: 4
-            period_seconds: 60
+            value: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 70
@@ -172,12 +161,9 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
           - type: Pods
-            value: 4
-            period_seconds: 60
+            value: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 75
@@ -202,12 +188,9 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
           - type: Pods
-            value: 4
-            period_seconds: 60
+            value: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 80
@@ -232,12 +215,9 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
           - type: Pods
-            value: 4
-            period_seconds: 60
+            value: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 85
@@ -262,12 +242,9 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: percent
-            value: 100
-            period_seconds: 120
           - type: Pods
-            value: 4
-            period_seconds: 60
+            value: 2
+            period_seconds: 15
       autoscaling_hpa:
         enabled: true
         target_cpu_util: 90
