@@ -45,7 +45,7 @@ autoscaling_util_strategy: CPU
 # Producer
 # Choose: Static, Pattern, Random, Stair
 producer_workload_pattern: Stair
-producer_pattern_window: 30
+producer_pattern_window: 15
 producer_messages_per_minute: 10000
 producer_sleep_time: 5
 producer_replica_count: 1
