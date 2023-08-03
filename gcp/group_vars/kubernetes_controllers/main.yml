@@ -54,10 +54,10 @@ producer_replica_count: 1
 # KEDA only takes the requests into account!
 autoscaling_resources:
   limits:
-    cpu: "250"
+    cpu: "250m"
     memory: "512Mi"
   requests:
-    cpu: "250"
+    cpu: "250m"
     memory: "512Mi"
 
 
