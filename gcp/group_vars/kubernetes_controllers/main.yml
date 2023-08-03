@@ -13,27 +13,27 @@ autoscaling_enabled: true
 autoscaling_min_replicas: 1
 autoscaling_max_replicas: 24
 autoscaling_scale_up:
-  window: 15
+  window: 0
   policies:
-    # - type: Percent
-    #   value: 100
-    #   period_seconds: 60
+    - type: Percent
+      value: 100
+      period_seconds: 15
     - type: Pods
-      value: 2
-      period_seconds: 45
+      value: 4
+      period_seconds: 15
 autoscaling_scale_down:
   window: 300
   policies:
     - type: Percent
       value: 100
-      period_seconds: 120
-    - type: Pods
-      value: 4
-      period_seconds: 60
+      period_seconds: 15
+    #- type: Pods
+    #  value: 4
+    #  period_seconds: 60
 # be aware that HPA and KEDA are exclusive - choose one of them by setting "enabled" to true or false exclusively
 autoscaling_hpa:
   enabled: true
-  target_cpu_util: 80
+  target_cpu_util: 90
 autoscaling_keda:
   enabled: false
   polling_interval: 30
@@ -44,9 +44,10 @@ autoscaling_util_strategy: CPU
 
 # Producer
 # Choose: Static, Pattern, Random, Stair
-producer_workload_pattern: Stair
-producer_pattern_window: 15
-producer_messages_per_minute: 10000
+producer_workload_pattern: Random
+producer_pattern_window: 30
+producer_seed: 30
+producer_messages_per_minute: 2000
 producer_sleep_time: 5
 producer_replica_count: 1
 
@@ -54,10 +55,10 @@ producer_replica_count: 1
 # KEDA only takes the requests into account!
 autoscaling_resources:
   limits:
-    cpu: "250m"
+    cpu: "300m"
     memory: "512Mi"
   requests:
-    cpu: "250m"
+    cpu: "300m"
     memory: "512Mi"
 
 
@@ -68,22 +69,85 @@ autoscaling_resources:
 # - Duration in hours
 experiments:
   - name: Round 1
-    duration: 2.0
+    duration: 0.5
     values:
       autoscaling_enabled: true
       autoscaling_min_replicas: 1
       autoscaling_max_replicas: 24
       autoscaling_scale_up:
-        window: 15
+        window: 0
         policies:
+          - type: Percent
+            value: 100
+            period_seconds: 15
           - type: Pods
             value: 4
             period_seconds: 15
       autoscaling_scale_down:
-        window: 180
+        window: 300
         policies:
+          - type: Percent
+            value: 100
+            period_seconds: 15
+      autoscaling_hpa:
+        enabled: true
+        target_cpu_util: 90
+      autoscaling_keda:
+        enabled: false
+        polling_interval: 30
+        cooldown_period: 300
+        trigger_cpu_value: 80
+        trigger_kafka_lag_threshold: 1000
+  - name: Round 2
+    duration: 0.5
+    values:
+      autoscaling_enabled: true
+      autoscaling_min_replicas: 1
+      autoscaling_max_replicas: 24
+      autoscaling_scale_up:
+        window: 0
+        policies:
+          - type: Percent
+            value: 100
+            period_seconds: 15
           - type: Pods
-            value: 2
+            value: 4
+            period_seconds: 15
+      autoscaling_scale_down:
+        window: 300
+        policies:
+          - type: Percent
+            value: 100
+            period_seconds: 15
+      autoscaling_hpa:
+        enabled: true
+        target_cpu_util: 75
+      autoscaling_keda:
+        enabled: false
+        polling_interval: 30
+        cooldown_period: 300
+        trigger_cpu_value: 80
+        trigger_kafka_lag_threshold: 1000
+  - name: Round 3
+    duration: 0.5
+    values:
+      autoscaling_enabled: true
+      autoscaling_min_replicas: 1
+      autoscaling_max_replicas: 24
+      autoscaling_scale_up:
+        window: 0
+        policies:
+          - type: Percent
+            value: 100
+            period_seconds: 15
+          - type: Pods
+            value: 4
+            period_seconds: 15
+      autoscaling_scale_down:
+        window: 300
+        policies:
+          - type: Percent
+            value: 100
             period_seconds: 15
       autoscaling_hpa:
         enabled: true
@@ -94,62 +158,8 @@ experiments:
         cooldown_period: 300
         trigger_cpu_value: 80
         trigger_kafka_lag_threshold: 1000
-  - name: Round 2
-    duration: 2.0
-    values:
-      autoscaling_enabled: true
-      autoscaling_min_replicas: 1
-      autoscaling_max_replicas: 24
-      autoscaling_scale_up:
-        window: 15
-        policies:
-          - type: Pods
-            value: 4
-            period_seconds: 15
-      autoscaling_scale_down:
-        window: 180
-        policies:
-          - type: Pods
-            value: 2
-            period_seconds: 15
-      autoscaling_hpa:
-        enabled: true
-        target_cpu_util: 65
-      autoscaling_keda:
-        enabled: false
-        polling_interval: 30
-        cooldown_period: 300
-        trigger_cpu_value: 80
-        trigger_kafka_lag_threshold: 1000
-  - name: Round 3
-    duration: 2.0
-    values:
-      autoscaling_enabled: true
-      autoscaling_min_replicas: 1
-      autoscaling_max_replicas: 24
-      autoscaling_scale_up:
-        window: 15
-        policies:
-          - type: Pods
-            value: 4
-            period_seconds: 15
-      autoscaling_scale_down:
-        window: 180
-        policies:
-          - type: Pods
-            value: 2
-            period_seconds: 15
-      autoscaling_hpa:
-        enabled: true
-        target_cpu_util: 70
-      autoscaling_keda:
-        enabled: false
-        polling_interval: 30
-        cooldown_period: 300
-        trigger_cpu_value: 80
-        trigger_kafka_lag_threshold: 1000
   - name: Round 4
-    duration: 2.0
+    duration: 0.5
     values:
       autoscaling_enabled: true
       autoscaling_min_replicas: 1

@@ -10,5 +10,6 @@ arguments:
   - "--sleeptime-seconds={{ producer_sleep_time }}"
   - "--messages-per-minute={{ producer_messages_per_minute }}"
   - "--pattern-window={{ producer_pattern_window }}"
+  - "--seed={{producer_seed}}"
 
 topic: "{{ kafka_topic }}"

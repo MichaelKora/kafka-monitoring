@@ -10,5 +10,6 @@ arguments:
   - "--sleeptime-seconds=30"
   - "--messages-per-minute=10000"
   - "--pattern-window=30"
+  - "--seed=30"
 
 topic: topic1
