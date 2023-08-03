@@ -82,7 +82,7 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: Pod
+          - type: Pods
             value: 2
             period_seconds: 15
       autoscaling_hpa:
@@ -109,7 +109,7 @@ experiments:
       autoscaling_scale_down:
         window: 180
         policies:
-          - type: Pod
+          - type: Pods
             value: 2
             period_seconds: 15
       autoscaling_hpa:
