@@ -464,7 +464,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "(sum by(pod) (rate(container_cpu_usage_seconds_total{namespace=\"kafka\", container=\"consumerapp\", pod=~\".*consumerapp.*\"}[5m])) / (max by (pod) (kube_pod_container_resource_limits{namespace=\"kafka\", container=\"consumerapp\", pod=~\".*consumerapp.*\", resource=\"cpu\"}))) * 100",
+          "expr": "(sum by(pod) (rate(container_cpu_usage_seconds_total{namespace=\"kafka\", container=\"consumerapp\", pod=~\".*consumerapp.*\"}[1m])) / (max by (pod) (kube_pod_container_resource_limits{namespace=\"kafka\", container=\"consumerapp\", pod=~\".*consumerapp.*\", resource=\"cpu\"}))) * 100",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
