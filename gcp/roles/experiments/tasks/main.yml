@@ -2,6 +2,9 @@
 - name: Make Grafana accessable
   include_tasks:
     file: grafana.yml
+    apply:
+      tags: grafana
+  tags: grafana
 
 - name: Run Experiment
   include_tasks:
@@ -9,3 +12,12 @@
   loop: "{{ experiments }}"
   loop_control:
     loop_var: experiment
+
+- name: Cleanup Experiment
+  include_tasks:
+    file: cleanup.yml
+    apply:
+      tags: cleanup
+  tags: 
+    - never
+    - cleanup

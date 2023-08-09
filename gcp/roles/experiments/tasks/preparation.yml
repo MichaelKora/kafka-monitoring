@@ -1,0 +1,33 @@
+---
+- name: Set number of Kafka partitions to max. Replica
+  set_fact:
+    kafka_partitions: "{{ autoscaling_max_replicas }}"
+  when: not kafka_enforce_partitions
+
+- name: Delete old Kafka Topic
+  command: >
+    kubectl exec pods/cluster-zookeeper-0
+    -n kafka
+    --
+    bin/kafka-topics.sh --delete
+    --bootstrap-server cluster-kafka-bootstrap.kafka:9092
+    --topic "{{ kafka_topic }}"
+  changed_when: false
+  register: result
+  failed_when: result.rc != 0 and "does not exist" not in result.stderr
+
+- name: Create Kafka Topic
+  command: >
+    kubectl exec pods/cluster-zookeeper-0
+    -n kafka
+    --
+    bin/kafka-topics.sh --create
+    --bootstrap-server cluster-kafka-bootstrap.kafka:9092
+    --topic "{{ kafka_topic }}"
+    --partitions "{{ kafka_partitions }}"
+    --replication-factor 1
+  changed_when: false
+
+- name: Restart producer
+  command: kubectl -n kafka rollout restart deploy
+  changed_when: false
