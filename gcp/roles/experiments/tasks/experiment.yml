@@ -1,41 +1,20 @@
 ---
-- name: Set number of Kafka partitions to max. Replica
-  set_fact:
-    kafka_partitions: "{{ autoscaling_max_replicas }}"
-  when: not kafka_enforce_partitions
-
-- name: Delete old Kafka Topic
-  command: >
-    kubectl exec pods/cluster-zookeeper-0
-    -n kafka
-    --
-    bin/kafka-topics.sh --delete
-    --bootstrap-server cluster-kafka-bootstrap.kafka:9092
-    --topic "{{ kafka_topic }}"
-  changed_when: false
-  register: result
-  failed_when: result.rc != 0 and "does not exist" not in result.stderr
-
-- name: Create Kafka Topic
-  command: >
-    kubectl exec pods/cluster-zookeeper-0
-    -n kafka
-    --
-    bin/kafka-topics.sh --create
-    --bootstrap-server cluster-kafka-bootstrap.kafka:9092
-    --topic "{{ kafka_topic }}"
-    --partitions "{{ kafka_partitions }}"
-    --replication-factor 1
-  changed_when: false
-
 - name: Preparing Experiment
   debug:
     msg: "{{ experiment['name']}} - Duration: {{ experiment['duration'] }}h"
+
+- name: Run preparation
+  include_tasks:
+    file: preparation.yml
 
 - name: Updating values
   set_fact:
     "{{ item.key }}": "{{ item.value }}"
   loop: "{{ experiment['values'] | dict2items }}"
+
+- name: Enable Producer
+  set_fact:
+    producer_replica_count: 1
 
 - name: Render consumer settings
   template:
@@ -59,6 +38,15 @@
     chdir: /root/kafka-monitoring/deployment
   changed_when: false
 
+- name: Restart producer
+  command: kubectl -n kafka rollout restart deploy
+  changed_when: false
+
 - name: Wait {{ experiment['duration'] }}h for experiment to finish
   pause:
     minutes: "{{ (experiment['duration'] * 60) | int }}"
+
+- name: Run clean eup
+  include_tasks:
+    file: cleanup.yml
+
