@@ -16,7 +16,12 @@ It has to consist of:
 - A dict `values` defining, which values should be changed. **Note**: You can only set values relatively to the last round. Make sure to add all values to prevent unexpected parameter sets.
 
 ## Git Repositories
-For an easily deployment the consumer and producer application are build locally on the Kubernetes and pushed into a DockerHub dummy account. To access them or switch to feature branches change these configurations. **Note**: If you are working on the same version Number the image tag `{BRANCH}_{VERSION}` will be overriden each for consumer and producer.
+For an easily deployment the consumer and producer application are build locally on the Kubernetes and pushed into a DockerHub dummy account. To access them or switch to feature branches change these configurations. 
+
+**Note**: If you are working on the same version Number the image tag `{BRANCH}_{VERSION}` will be overriden each for consumer and producer.
+
+Link to the DockerHub Account: [https://hub.docker.com/u/avarange](https://hub.docker.com/u/avarange)
+
 |Configuration|Meaning|
 |---|---|
 |consumer_repository|Configures the DockerHub repository for the consumer. (Default: avarange/pj-ds-consumer)|
