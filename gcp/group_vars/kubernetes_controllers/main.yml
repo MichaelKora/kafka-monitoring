@@ -47,7 +47,7 @@ autoscaling_util_strategy: CPU
 producer_workload_pattern: Random
 producer_pattern_window: 30
 producer_seed: 30
-producer_messages_per_minute: 2000
+producer_messages_per_minute: 1500
 producer_sleep_time: 5
 producer_replica_count: 1
 
