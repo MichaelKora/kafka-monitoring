@@ -1,7 +1,7 @@
 name: consumerapp
 replicaCount: 1
 image:
-  repository: avarange/pj-ds-consumer
+  repository: {{ consumer_repository }}
 #  repository:  k3d-monitoring-registry.localhost:12345/consumerapp
   pullPolicy:  Always
 port: 8080

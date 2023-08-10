@@ -1,6 +1,13 @@
 ---
 # Default values
 # -----------------------------------------------------------------
+
+# Git Config
+consumer_repository: avarange/pj-ds-consumer
+consumer_branch: main
+producer_repository: avarange/pj-ds-producer
+producer_branch: main
+
 # Kafka
 # kafka_partitions will only be used if kafka_enforce_partitions is
 # true. Default is the value of autoscaling_max_replicas
