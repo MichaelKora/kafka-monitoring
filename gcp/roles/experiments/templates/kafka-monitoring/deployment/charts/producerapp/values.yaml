@@ -2,7 +2,8 @@ name: producerapp
 # just scale up in case you want to start producing messages
 replicaCount: {{ producer_replica_count }}
 image:
-  repository: avarange/pj-ds-producer
+  repository: {{ producer_repository }}
+  tag: {{ repository_branch }}_{{ producer_app_version }}
   pullPolicy: Always
 
 arguments:

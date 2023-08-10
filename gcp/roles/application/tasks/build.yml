@@ -18,8 +18,8 @@
   community.docker.docker_image:
     build:
       path: /root/kafka-monitoring/consumerapp
-    name: avarange/pj-ds-consumer
-    tag: "{{ consumer_app_version }}"
+    name: "{{ consumer_repository }}"
+    tag: "{{ repository_branch }}_{{ consumer_app_version }}"
     push: true
     source: build
 
@@ -36,8 +36,8 @@
   community.docker.docker_image:
     build:
       path: /root/kafka-monitoring/producerapp
-    name: avarange/pj-ds-producer
-    tag: "{{ producer_app_version }}"
+    name: "{{ producer_repository }}"
+    tag: "{{ repository_branch }}_{{ producer_app_version }}"
     push: true
     source: build
 

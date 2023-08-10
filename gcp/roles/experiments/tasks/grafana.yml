@@ -38,14 +38,15 @@
       - --------------------------------------
       - ATTENTION
       - --------------------------------------
-      - This playbook will not terminate. To
-      - quit hit CTRL + C
+      - This playbook will run port-forward in
+      - background!
       - ""
       - Open Grafana via http://localhost:3000
       - ""
-      - or enable port-forwarding yourself with
+      - You can disable this tasks and enable 
+      - port-forwarding yourself with
       - blocking command
-      - "gcloud compute ssh controller-1 --zone=europe-west1-b -- -NL 3000: grafana_ip :80"
+      - "gcloud compute ssh controller-1 --zone=europe-west1-b -- -NL 3000:{{ grafana_ip }}:80"
 
 - name: Finish Preparation
   pause:
