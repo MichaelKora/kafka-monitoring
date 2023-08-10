@@ -4,9 +4,8 @@
 
 # Git Config
 consumer_repository: avarange/pj-ds-consumer
-consumer_branch: main
 producer_repository: avarange/pj-ds-producer
-producer_branch: main
+repository_branch: main
 
 # Kafka
 # kafka_partitions will only be used if kafka_enforce_partitions is

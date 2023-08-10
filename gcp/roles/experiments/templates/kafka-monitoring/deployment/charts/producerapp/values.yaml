@@ -3,6 +3,7 @@ name: producerapp
 replicaCount: {{ producer_replica_count }}
 image:
   repository: {{ producer_repository }}
+  tag: {{ repository_branch }}_{{ producer_app_version }}
   pullPolicy: Always
 
 arguments:

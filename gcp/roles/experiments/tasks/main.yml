@@ -6,6 +6,24 @@
       tags: grafana
   tags: grafana
 
+- name: Get consumer app version
+  slurp:
+    src: /root/kafka-monitoring/deployment/charts/consumerapp/Chart.yaml
+  register: result
+
+- name: Extract consumer app version
+  set_fact:
+    consumer_app_version: "{{ result.content | b64decode | regex_search('appVersion:\\s+\"(.*)\"', '\\1') | first }}"
+
+- name: Get producer app version
+  slurp:
+    src: /root/kafka-monitoring/deployment/charts/producerapp/Chart.yaml
+  register: result
+
+- name: Extract producer app version
+  set_fact:
+    producer_app_version: "{{ result.content | b64decode | regex_search('appVersion:\\s+\"(.*)\"', '\\1') | first }}"
+
 - name: Run Experiment
   include_tasks:
     file: experiment.yml

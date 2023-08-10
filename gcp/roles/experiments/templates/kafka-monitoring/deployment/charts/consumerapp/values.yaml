@@ -2,6 +2,7 @@ name: consumerapp
 replicaCount: 1
 image:
   repository: {{ consumer_repository }}
+  tag: {{ repository_branch }}_{{ consumer_app_version }}
 #  repository:  k3d-monitoring-registry.localhost:12345/consumerapp
   pullPolicy:  Always
 port: 8080
