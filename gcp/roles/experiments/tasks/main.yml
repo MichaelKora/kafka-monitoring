@@ -18,6 +18,6 @@
     file: cleanup.yml
     apply:
       tags: cleanup
-  tags: 
+  tags:
     - never
     - cleanup

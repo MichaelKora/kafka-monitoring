@@ -27,9 +27,9 @@ autoscaling_scale_down:
     - type: Percent
       value: 100
       period_seconds: 15
-    #- type: Pods
-    #  value: 4
-    #  period_seconds: 60
+    # - type: Pods
+    #   value: 4
+    #   period_seconds: 60
 # be aware that HPA and KEDA are exclusive - choose one of them by setting "enabled" to true or false exclusively
 autoscaling_hpa:
   enabled: true
