@@ -35,3 +35,7 @@
 - name: Set Consumer replicas to 1
   command: kubectl scale deployment/consumerapp -n kafka --replicas=1
   changed_when: false
+
+- name: Enable Producer
+  command: kubectl scale deployment/producerapp -n kafka --replicas=1
+  changed_when: false
