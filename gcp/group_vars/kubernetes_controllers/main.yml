@@ -97,7 +97,7 @@ experiments:
             period_seconds: 15
       autoscaling_hpa:
         enabled: true
-        target_cpu_util: 90
+        target_cpu_util: 60
       autoscaling_keda:
         enabled: false
         polling_interval: 30
@@ -120,14 +120,14 @@ experiments:
             value: 4
             period_seconds: 15
       autoscaling_scale_down:
-        window: 300
+        window: 150
         policies:
           - type: Percent
             value: 100
             period_seconds: 15
       autoscaling_hpa:
         enabled: true
-        target_cpu_util: 75
+        target_cpu_util: 90
       autoscaling_keda:
         enabled: false
         polling_interval: 30
@@ -150,14 +150,14 @@ experiments:
             value: 4
             period_seconds: 15
       autoscaling_scale_down:
-        window: 300
+        window: 50
         policies:
           - type: Percent
             value: 100
             period_seconds: 15
       autoscaling_hpa:
         enabled: true
-        target_cpu_util: 60
+        target_cpu_util: 90
       autoscaling_keda:
         enabled: false
         polling_interval: 30
