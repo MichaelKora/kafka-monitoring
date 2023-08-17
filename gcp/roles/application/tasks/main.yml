@@ -1,5 +1,5 @@
 ---
-- name: Setup Repository
+- name: Setup Repository and Building the Application
   include_tasks:
     file: repository.yml
     apply:

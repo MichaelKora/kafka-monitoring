@@ -46,7 +46,7 @@
     regexp: 'SystemdCgroup = false'
     replace: 'SystemdCgroup = true'
 
-- name: Eenable and restart Containerd
+- name: Enable and restart Containerd
   systemd:
     name: containerd
     state: restarted

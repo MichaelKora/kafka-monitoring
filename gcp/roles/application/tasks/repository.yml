@@ -6,7 +6,7 @@
     version: "{{ repository_branch }}"
     force: true
 
-- name: Creating Application Images
+- name: Build Application Images
   include_tasks:
     file: build.yml
     apply:

@@ -1,4 +1,11 @@
 ---
+# defines the project tag for the gcloud firewall rules
 target_tags: distributed-systems
+
+# defines which user at the VM to user
 remote_user: root
+
+# defines where locally the ssh public key file is generated
+# Gcloud needs one meta file containg all ssh keys, which the 
+# playbook generates. Store your keyfiles under files/ssh
 public_keys_file: files/ssh/ssh_keys.pub

@@ -1,5 +1,5 @@
 ---
-- name: Create temp. file with all public keys
+- name: Create temp. file containing all public keys
   shell: 'echo "root:$(cat {{ item }})" >> {{ public_keys_file }}'
   loop: "{{ lookup('fileglob', 'files/ssh/*.pub', wantlist=True) }}"
   changed_when: false

@@ -1,5 +1,5 @@
 ---
-# Dummy Account als Workaround
+# Use dummy Docker Hub Account als Workaround
 - name: Login into Docker Hub
   community.docker.docker_login:
     username: "{{ vault_docker_hub_username }}"

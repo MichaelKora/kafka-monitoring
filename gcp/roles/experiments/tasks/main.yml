@@ -1,5 +1,5 @@
 ---
-- name: Make Grafana accessable
+- name: Make Grafana locally accessable
   include_tasks:
     file: grafana.yml
     apply:

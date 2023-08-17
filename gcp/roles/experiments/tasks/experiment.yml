@@ -1,9 +1,9 @@
 ---
-- name: Preparing Experiment
+- name: Preparing next Experiment
   debug:
     msg: "{{ experiment['name']}} - Duration: {{ experiment['duration'] }}h"
 
-- name: Run preparation
+- name: Run Preparation
   include_tasks:
     file: preparation.yml
 
@@ -46,6 +46,6 @@
   pause:
     minutes: "{{ (experiment['duration'] * 60) | int }}"
 
-- name: Run clean eup
+- name: Run clean up
   include_tasks:
     file: cleanup.yml
