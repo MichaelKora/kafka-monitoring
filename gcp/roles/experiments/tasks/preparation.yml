@@ -4,7 +4,15 @@
     kafka_partitions: "{{ autoscaling_max_replicas }}"
   when: not kafka_enforce_partitions
 
-- name: Delete old Kafka Topic
+- name: Set Consumer replicas to 0
+  command: kubectl scale deployment/consumerapp -n kafka --replicas=0
+  changed_when: false
+
+- name: Set Producer replicas to 0
+  command: kubectl scale deployment/producerapp -n kafka --replicas=0
+  changed_when: false
+
+- name: Delete old Kafka Topic if exists
   command: >
     kubectl exec pods/cluster-zookeeper-0
     -n kafka
@@ -14,7 +22,7 @@
     --topic "{{ kafka_topic }}"
   changed_when: false
   register: result
-  failed_when: result.rc != 0 and "does not exist" not in result.stderr
+  ignore_errors: yes
 
 - name: Create Kafka Topic
   command: >
@@ -28,14 +36,10 @@
     --replication-factor 1
   changed_when: false
 
-- name: Restart producer
-  command: kubectl -n kafka rollout restart deploy/producerapp
-  changed_when: false
-
 - name: Set Consumer replicas to 1
   command: kubectl scale deployment/consumerapp -n kafka --replicas=1
   changed_when: false
 
-- name: Enable Producer
+- name: Set Producer replicas to 1
   command: kubectl scale deployment/producerapp -n kafka --replicas=1
   changed_when: false

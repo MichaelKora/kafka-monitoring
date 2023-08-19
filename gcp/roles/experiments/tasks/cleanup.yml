@@ -1,4 +1,12 @@
 ---
+- name: Set Consumer replicas to 0
+  command: kubectl scale deployment/consumerapp -n kafka --replicas=0
+  changed_when: false
+
+- name: Set Producer replicas to 0
+  command: kubectl scale deployment/producerapp -n kafka --replicas=0
+  changed_when: false
+
 - name: Delete old Kafka Topic
   command: >
     kubectl exec pods/cluster-zookeeper-0
@@ -11,18 +19,6 @@
   register: result
   failed_when: result.rc != 0 and "does not exist" not in result.stderr
 
-- name: Disable Producer
-  command: kubectl scale deployment/producerapp -n kafka --replicas=0
-  changed_when: false
-
-- name: Restart producer
-  command: kubectl -n kafka rollout restart deploy/producerapp
-  changed_when: false
-
-- name: Set Consumer replicas to 1
-  command: kubectl scale deployment/consumerapp -n kafka --replicas=1
-  changed_when: false
-
-- name: 1 Minute timeoff between experiments
+- name: 1 Minute timeout between experiments
   pause:
     minutes: 1

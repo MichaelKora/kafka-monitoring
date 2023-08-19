@@ -1,5 +1,5 @@
 name: consumerapp
-replicaCount: 1
+replicaCount: 0
 image:
   repository: avarange/pj-ds-consumer
 #  repository:  k3d-monitoring-registry.localhost:12345/consumerapp
