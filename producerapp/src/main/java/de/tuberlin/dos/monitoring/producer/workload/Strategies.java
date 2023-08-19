@@ -1,7 +1,5 @@
 package de.tuberlin.dos.monitoring.producer.workload;
 
-import static java.time.chrono.JapaneseEra.values;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +14,13 @@ import org.slf4j.LoggerFactory;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Strategies {
 
+	private enum _Strategies {
+		STATIC,
+		PATTERN,
+		RANDOM,
+		STAIR
+	}
+
 	private static final Logger log = LoggerFactory.getLogger(Strategies.class);
 
 	private final WorkloadContext workloadContext;
@@ -25,13 +30,18 @@ public class Strategies {
 	}
 
 	public WorkloadStrategy pickWorkloadStrategy(String workload) {
-		return switch (workload.toUpperCase()) {
-			case "STATIC" -> this::staticStrategy;
-			case "PATTERN" -> this::patternStrategy;
-			case "RANDOM" -> this::randomStrategy;
-			case "STAIR" -> this::stairStrategy;
-			default -> throw new IllegalStateException("Unknown workload: %s. Pick one of %s".formatted(workload.toUpperCase(), values()));
-		};
+		WorkloadStrategy strategy;
+		try {
+			strategy = switch (_Strategies.valueOf(workload.toUpperCase())) {
+				case STATIC -> this::staticStrategy;
+				case PATTERN -> this::patternStrategy;
+				case RANDOM -> this::randomStrategy;
+				case STAIR -> this::stairStrategy;
+			};
+		} catch (IllegalArgumentException e) {
+			throw new UnsupportedOperationException("Unknown workload pattern: %s. Pick one of %s".formatted(workload.toUpperCase(), _Strategies.values()));
+		}
+		return strategy;
 	}
 
 	private void staticStrategy(KafkaProducer<String, String> producer) {
