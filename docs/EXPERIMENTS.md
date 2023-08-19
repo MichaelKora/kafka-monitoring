@@ -1,5 +1,11 @@
 # Experiments
-This guide will show to run a series of experiments in the Google Cloud. It is required to setup the `gcloud` environment and running the `init` and `setup` Ansible Playbook tags in advance. Also make sure to have Ansible installed.
+This guide will show to run a series of experiments in the Google Cloud. It is required to setup the `gcloud` environment 
+and running the `init` and `setup` Ansible Playbook tags in advance. Also make sure to have Ansible installed.
+
+##### TL;DR
+To run the `experiments` pre-defined in the [main.yml](../gcp/group_vars/kubernetes_controllers/main.yml),
+execute the following command:
+`ansible-playbook playbook.yml -t experiments`
 
 ## Variables
 All variables are definied in the Ansible `group_vars` file of the group `kubernetes_controllers`.
@@ -7,7 +13,9 @@ All variables are definied in the Ansible `group_vars` file of the group `kubern
 The file is located at: [/gcp/group_vars/kubernetes_controllers/main.yml](../gcp/group_vars/kubernetes_controllers/main.yml)
 
 At top of the file you find the default values for the consumer, the producer and the resources.
-Ansible will render the file located at helm chat values file for [consumer](../deployment/charts/consumerapp/values.yaml), [producer](../deployment/charts/producerapp/values.yaml). (For details see the [Ansible template](../gcp/roles/experiments/templates/kafka-monitoring/deployment/charts/)).
+Ansible will render the file located at helm chat values file for [consumer](../deployment/charts/consumerapp/values.yaml), 
+[producer](../deployment/charts/producerapp/values.yaml). 
+For details see the [Ansible template](../gcp/roles/experiments/templates/kafka-monitoring/deployment/charts)).
 
 At the end of `group_vars` file you find the list of dicts `experiments`. Each entry defines an experiment round.
 It has to consist of:
@@ -16,9 +24,11 @@ It has to consist of:
 - A dict `values` defining, which values should be changed. **Note**: You can only set values relatively to the last round. Make sure to add all values to prevent unexpected parameter sets.
 
 ## Git Repositories
-For an easily deployment the consumer and producer application are build locally on the Kubernetes and pushed into a DockerHub dummy account. To access them or switch to feature branches change these configurations. 
+For an easy deployment the consumer and producer application are build locally on the Kubernetes 
+and pushed into a DockerHub dummy account. To access them or switch to feature branches change these configurations. 
 
-**Note**: If you are working on the same version Number the image tag `{BRANCH}_{VERSION}` will be overriden each for consumer and producer.
+**Note**: If you are working on the same version Number the image tag `{BRANCH}_{VERSION}` will be overwritten 
+each for consumer and producer.
 
 Link to the DockerHub Account: [https://hub.docker.com/u/avarange](https://hub.docker.com/u/avarange)
 
@@ -61,7 +71,7 @@ Link to the DockerHub Account: [https://hub.docker.com/u/avarange](https://hub.d
 |---|---|
 |autoscaling_resources|Controls the pod's resources. Consists of dict `limits` and `requets`. Each contain of `cpu` (ending with `m`, Default:`250m`) and `memory` (ending with `Mi`, Default: `512Mi`)|
 
-For detailed informartion have a look at the kubernetes documentation: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+For detailed information have a look at the kubernetes documentation: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
 ## Ansible hint:
 A list always starts with a `-`, while each element of a dict is just added intended.
@@ -97,7 +107,8 @@ ansible-playbook playbook.yml -t start
 ```
 ansible-playbook playbook.yml -t experiments
 ```
-5. The playbook will make the Grafana instance available by using Port-forwarding and show you the link. Confirm to start the experiment by pressing any button
+5. The playbook will make the Grafana instance available by using Port-forwarding and show you the link. 
+   Confirm to start the experiment by pressing ctrl-c, and then C (continue) or A (abort)
 ```
 TASK [experiments : Show link to Grafana] *************************************************
 ok: [controller-1] => {
@@ -116,5 +127,5 @@ ok: [controller-1] => {
     ]
 }
 ```
-6. The configuration is rendered, uploaded and applied. Afterwards the playbook prints when it is ready and waits for the experiment round to finish.
+6. The configuration is rendered, uploaded and applied. Afterward the playbook prints when it is ready and waits for the experiment round to finish.
 7. You should be able to see and export the values in the Grafana Dashboard.
