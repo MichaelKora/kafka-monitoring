@@ -29,9 +29,9 @@ public class ProducerApp implements Runnable {
 	private int sleeptimeSeconds;
 	@Option(names = "--seed", defaultValue = "1")
 	private int seed;
-	@Option(names = "--messages-per-minute", defaultValue = "5000", description = "Amount of messages sent per minute.")
+	@Option(names = "--messages-per-minute", required = true, description = "Amount of messages sent per minute.")
 	private int messagesPerMinute;
-	@Option(names = "--pattern-window", defaultValue = "10", description = "Amount of times data is sent")
+	@Option(names = "--pattern-window", required = true, description = "Amount of minutes the chosen pattern stays.")
 	private int patternWindow;
 
 	public static void main(String[] args) {

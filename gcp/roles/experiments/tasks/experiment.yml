@@ -39,7 +39,7 @@
   changed_when: false
 
 - name: Restart producer
-  command: kubectl -n kafka rollout restart deploy
+  command: kubectl -n kafka rollout restart deploy/producerapp
   changed_when: false
 
 - name: Wait {{ experiment['duration'] }}h for experiment to finish
