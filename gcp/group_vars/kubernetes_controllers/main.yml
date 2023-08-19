@@ -99,7 +99,7 @@ experiments:
         enabled: true
         polling_interval: 30
         cooldown_period: 300
-        trigger_cpu_value: 90
+        trigger_cpu_value: 75
         trigger_kafka_lag_threshold: 1000
   - name: Round 2
     duration: 0.5
@@ -127,7 +127,7 @@ experiments:
         polling_interval: 30
         cooldown_period: 300
         trigger_cpu_value: 90
-        trigger_kafka_lag_threshold: 1500
+        trigger_kafka_lag_threshold: 1000
   - name: Round 3
     duration: 0.5
     values:
