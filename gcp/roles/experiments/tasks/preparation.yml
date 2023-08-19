@@ -4,6 +4,10 @@
     kafka_partitions: "{{ autoscaling_max_replicas }}"
   when: not kafka_enforce_partitions
 
+- name: Set Consumer replicas to 0
+  command: kubectl scale deployment/consumerapp -n kafka --replicas=0
+  changed_when: false
+
 - name: Delete old Kafka Topic
   command: >
     kubectl exec pods/cluster-zookeeper-0
