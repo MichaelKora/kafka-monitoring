@@ -29,7 +29,7 @@
   changed_when: false
 
 - name: Restart producer
-  command: kubectl -n kafka rollout restart deploy
+  command: kubectl -n kafka rollout restart deploy/producerapp
   changed_when: false
 
 - name: Set Consumer replicas to 1
