@@ -19,14 +19,6 @@
   command: kubectl scale deployment/producerapp -n kafka --replicas=0
   changed_when: false
 
-- name: Restart producer
-  command: kubectl -n kafka rollout restart deploy/producerapp
-  changed_when: false
-
-- name: Set Consumer replicas to 1
-  command: kubectl scale deployment/consumerapp -n kafka --replicas=1
-  changed_when: false
-
 - name: 1 Minute timeoff between experiments
   pause:
     minutes: 1
