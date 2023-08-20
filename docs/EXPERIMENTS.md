@@ -129,3 +129,5 @@ ok: [controller-1] => {
 ```
 6. The configuration is rendered, uploaded and applied. Afterward the playbook prints when it is ready and waits for the experiment round to finish.
 7. You should be able to see and export the values in the Grafana Dashboard.
+
+###### If you want to switch back to HPA after using KEDA, you have to run the setup again first! So you might don't want to mix up "normal" HPA and KEDA experiments. 

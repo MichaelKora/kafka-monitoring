@@ -38,8 +38,24 @@
     chdir: /root/kafka-monitoring/deployment
   changed_when: false
 
+- name: 1 Minute timeout between experiments
+  pause:
+    minutes: 1
+
+- name: Set Consumer replicas to 1
+  command: kubectl scale deployment/consumerapp -n kafka --replicas=1
+  changed_when: false
+
+- name: Set Producer replicas to 1
+  command: kubectl scale deployment/producerapp -n kafka --replicas=1
+  changed_when: false
+
 - name: Restart producer
   command: kubectl -n kafka rollout restart deploy/producerapp
+  changed_when: false
+
+- name: Restart consumer
+  command: kubectl -n kafka rollout restart deploy/consumerapp
   changed_when: false
 
 - name: Wait {{ experiment['duration'] }}h for experiment to finish

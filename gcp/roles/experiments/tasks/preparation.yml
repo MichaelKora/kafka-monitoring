@@ -35,11 +35,3 @@
     --partitions "{{ kafka_partitions }}"
     --replication-factor 1
   changed_when: false
-
-- name: Set Consumer replicas to 1
-  command: kubectl scale deployment/consumerapp -n kafka --replicas=1
-  changed_when: false
-
-- name: Set Producer replicas to 1
-  command: kubectl scale deployment/producerapp -n kafka --replicas=1
-  changed_when: false

@@ -18,7 +18,3 @@
   changed_when: false
   register: result
   failed_when: result.rc != 0 and "does not exist" not in result.stderr
-
-- name: 1 Minute timeout between experiments
-  pause:
-    minutes: 1
